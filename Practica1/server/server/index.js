@@ -27,7 +27,7 @@ const port = process.env.PORT||4001;
 const {SerialPort} = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline')
 
-const mySerial = new SerialPort({path:'COM5',baudRate: 9600}); //corregir puerto segun el arduino
+const mySerial = new SerialPort({path:'COM4',baudRate: 9600}); //corregir puerto segun el arduino
 
 
 const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\n' }))
