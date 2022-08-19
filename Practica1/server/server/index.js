@@ -32,11 +32,50 @@ const mySerial = new SerialPort({path:'COM4',baudRate: 9600}); //corregir puerto
 
 const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\n' }))
 
+//Base de datos Firebase
+
+const { initializeApp, applicationDefault } = require('firebase-admin/app');
+const { getDatabase, ref, set } = require("firebase-admin/database");
+const admindb = require("firebase-admin/database")
+
+var config = {
+    credential: applicationDefault(),
+    databaseURL: 'https://practica1-arq2-default-rtdb.firebaseio.com'
+};
+
+const ejec = initializeApp(config);
+const database = getDatabase(ejec);
+
+var hoy = new Date();
+var mes = hoy.getMonth();
+var dia = hoy.getDate();
+
+const refer = database.ref('indoor/registros/'+mes + '/18' );
+
 let bandera = false;
 
 app.get('/',(req,res,next)=>{
     res.sendFile(__dirname+'/index.html');
     //res.set('Access-Control-Allow-Origin','http://localhost:3000');
+});
+
+
+app.get('/retomar_datos',(req,res)=>{
+    var Datos_recuperados = {
+        "indoor":
+        {
+        "registros":[]
+        }
+    };
+    const recuperar = database.ref('indoor/registros/'+mes+'/'+req.query.fecha);
+    recuperar.on("value",function(snapshot){
+        snapshot.forEach(function(childSnapshot){
+            var key = childSnapshot.key;
+            var childData = childSnapshot.val();
+            Datos_recuperados.indoor.registros.push(childData);
+        });
+        res.json(Datos_recuperados);
+    });
 });
 
 mySerial.on('open', function(){
@@ -47,6 +86,7 @@ mySerial.on('open', function(){
 
 
 var data_arduino;
+var datoactual = 0;
 //var contador; //variable utilizada para hacer pruebas de emision en un arduino uno, no relacionado a la practica
 
 
@@ -54,9 +94,15 @@ parser.on('data', function (data){
     let temp = data.toString();
    const datos = temp.split(",");
    // contador = data.toString();
+   if(datos[1])
     data_arduino = {temperatura: datos[0],distancia: datos[1], tiempo: datos[2],velocidad: datos[3],BPM: datos[4]};
 
-    console.log(data_arduino);
+    //console.log(data_arduino);
+    if(datoactual != datos[2])
+        {
+            //writeData(data_arduino); //descomentar luego
+            datoactual = datos[2];
+        }
 
     if (bandera==false){
         mySerial.write('s');
@@ -65,13 +111,22 @@ parser.on('data', function (data){
     }
 });
 
+
 mySerial.on('data', function(data){
     io.emit('datos_arduino', data_arduino);
+
 });
 
 /*io.on('connection', (socket) =>{
     socket.emit("contador",contador);
 });*/
+
+
+
+function writeData(data_arduino) {
+    const db = database;
+    refer.push(data_arduino);
+}
 
 
 server.listen(4001, ()=>{
