@@ -13,11 +13,11 @@ float green;
 float blue;
 
 //Variables
-float tempValue = 15;
-float BPMValue = 60;
-float calValue = 0;
-float weightValue = 0;
-float timeValue = 0;
+float tempValue = 15; //Guarda el valor de temperatura actual 
+float BPMValue = 60; //Guarda el valor de Latidos por minuto actual
+float calValue = 0; //Guarda el valor de las calorias quemadas actuales
+float weightValue = 0; //Guarda el valor del peso de la persona
+float timeValue = 0; //Guarda el valor del tiempo en segundos
 
 int lastSecond = 0;
 int tiempoConsulta = 0;
@@ -75,7 +75,7 @@ void draw(){
   renderWave();
 }
 
-void getData(){
+void getData(){ //Obtiene los datos enviados desde la base de datos por medio de una ruta
   int currentSecond = second();
   boolean consultar = false;
   
@@ -113,7 +113,7 @@ void getData(){
   }
 }
 
-void frames(){
+void frames(){ //Dibuja los cuadros de separacion de las animaciones
   fill(255,255,255); //color de los retangulos Blanco
   
   //Retangulos para separar la informacion
@@ -124,12 +124,12 @@ void frames(){
   rect(150,400,700,200);
 }
 
-void addImages(){ 
+void addImages(){ //Anade las imagenes a las animaciones
   image(temperature,300,100); //Imagene de temperatura
   image(calories,715,137); //Imagene de temperatura
 }
 
-void labelText(){
+void labelText(){ //Agrega las etiquetas de texto que aparecen en las animaciones
   //Temperatura
   textSize(18); //Tamaño del texto
   fill(255,255,255); //Color del texto Blanco
@@ -162,7 +162,7 @@ void labelText(){
 
 }
 
-void drawTemperature(){
+void drawTemperature(){ //Anima el termomemtro de temperatura
   //Color Temperatura
   //Conversion para la temperatura donde maximo sea 36ºC y mínimo 15ºC
                   //Valor,Min,Max,Rango para devolver el valor
@@ -180,7 +180,7 @@ void drawTemperature(){
   ellipse(355,201,26,26);
 }
 
-void drawCalories(){
+void drawCalories(){ //Anima el circulo de calorias
   //Color Temperatura
   //Conversion para la temperatura donde maximo sea 36ºC y mínimo 15ºC
                   //Valor,Min,Max,Rango para devolver el valor
@@ -193,14 +193,15 @@ void drawCalories(){
   //Dibujamos un retangulo y una esfera para colorear la temperatura
   noStroke(); //Les quita el borde a las figuras
   ellipseMode(CENTER);
-  fill(247, 172, 11);
-  arc(750,170,130,130, 0, PI*(calValue*0.0009)); 
   
-  fill(255);
-  ellipse(750,170,80,80);
+  fill(247, 172, 11); //Color naranja
+  arc(750,170,130,130, 0, PI*(calValue*0.0009)); //Circulo mas grande 
+  
+  fill(255); //Color blanco
+  ellipse(750,170,80,80); //Circulo mas pequeno
 }
 
-void calcWave() {
+void calcWave() { //Calcula los valores necesarios para la grafica de ondas
   // Increment theta (try different values for 'angular velocity' here
   theta += 0.1;
 
@@ -221,10 +222,10 @@ void calcWave() {
   }
 }
 
-void renderWave() {
+void renderWave() { //Dibuja las ondas acorde a los valores calculados en el metodo de arriba
   // A simple way to draw the wave with an ellipse at each location
   noStroke();
-  fill(0);
+  fill(0);//Color negro
   ellipseMode(CENTER);
   for (int x = 0; x < yvalues.length; x++) {
     ellipse((x*xspacing)*0.69+150,(height/2+yvalues[x])+180,6,6);
