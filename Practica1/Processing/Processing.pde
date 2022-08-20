@@ -16,6 +16,9 @@ float blue;
 float tempValue = 15;
 float BPMValue = 60;
 float calValue = 0;
+float weightValue = 0;
+float timeValue = 0;
+
 int lastSecond = 0;
 int tiempoConsulta = 0;
 
@@ -39,7 +42,7 @@ void setup(){
   
   w = width + 16;
   for (int i = 0; i < maxwaves; i++) {
-    json = loadJSONObject("http://localhost:8080/actualData");
+    json = loadJSONObject("http://localhost:4001/getDatos");
     BPMValue = json.getInt("frecuencia");
     amplitude[i] = (BPMValue*0.5)-30;;
     println(amplitude[i]);
@@ -88,7 +91,7 @@ void getData(){
   
   if(consultar){
     //Consumo de Api
-    json = loadJSONObject("http://localhost:8080/actualData");
+    json = loadJSONObject("http://localhost:4001/getDatos");
     
     tempValue = json.getFloat("temperatura"); //Obtiene los valores de temperatura corporal
     
@@ -97,12 +100,16 @@ void getData(){
     amplitude[2] = amplitude[3];
     BPMValue = json.getFloat("frecuencia"); //Obtiene los valores de Frecuencia cardiaca
     amplitude[3] = (BPMValue*0.5)-30;
-    println("num: 1"+" Val: "+(amplitude[0]*2+30));
-    println("num: 2"+" Val: "+(amplitude[1]*2+30));
-    println("num: 3"+" Val: "+(amplitude[2]*2+30));
-    println("num: 4"+" Val: "+(amplitude[3]*2+30));
+    //println("num: 1"+" Val: "+(amplitude[0]*2+30));
+    //println("num: 2"+" Val: "+(amplitude[1]*2+30));
+    //println("num: 3"+" Val: "+(amplitude[2]*2+30));
+    //println("num: 4"+" Val: "+(amplitude[3]*2+30));
     
-    calValue = json.getFloat("calorias"); //Obtiene los valores de calorias quemadas
+    weightValue = json.getFloat("peso"); //Obtiene valor de peso en kg de la persona
+    timeValue = json.getFloat("tiempo"); //Obtiene la cantidad de segundos que lleva ejercitandose
+    
+    //Formula para calcular calorias quemadas 0.049*(peso *2.2)*total de minutos de practica
+    calValue = 0.049*(weightValue*2.2)*(timeValue/60);
   }
 }
 
