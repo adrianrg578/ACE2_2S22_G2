@@ -43,7 +43,8 @@ void setup(){
   w = width + 16;
   for (int i = 0; i < maxwaves; i++) {
     json = loadJSONObject("http://localhost:4001/getDatos");
-    BPMValue = json.getInt("frecuencia");
+    String temp = json.getString("BPM");
+    BPMValue = float(temp);
     amplitude[i] = (BPMValue*0.5)-30;;
     println(amplitude[i]);
     float period = random(100,300); // How many pixels before the wave repeats
@@ -98,7 +99,8 @@ void getData(){ //Obtiene los datos enviados desde la base de datos por medio de
     amplitude[0] = amplitude[1];
     amplitude[1] = amplitude[2];
     amplitude[2] = amplitude[3];
-    BPMValue = json.getFloat("frecuencia"); //Obtiene los valores de Frecuencia cardiaca
+    String temp = json.getString("BPM");
+    BPMValue = float(temp); //Obtiene los valores de Frecuencia cardiaca
     amplitude[3] = (BPMValue*0.5)-30;
     //println("num: 1"+" Val: "+(amplitude[0]*2+30));
     //println("num: 2"+" Val: "+(amplitude[1]*2+30));

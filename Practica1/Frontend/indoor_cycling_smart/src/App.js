@@ -15,9 +15,6 @@ import {
   Legend,
 } from 'chart.js';
 
-import ChartStreaming from 'chartjs-plugin-streaming';
-
-
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -27,16 +24,6 @@ ChartJS.register(
     Tooltip,
     Legend
 );
-
-
-ChartJS.register(ChartStreaming);
-
-ChartJS.defaults.set('plugins.streaming', {
-  duration: 5000
-});
-
-
-const ctx = document.getElementById('myChart');
 
 const socket = io.connect("http://localhost:4001");
 const axios = require("axios");
@@ -52,23 +39,23 @@ function App() {
     const [bpm, setBpm]=useState("");
     const [arreglolabels,setArreglolabels]=useState([]);
     const [graphdata, setGraphdata]=useState([]);
+    const [graphdata_2, setGraphdata_2] = useState([]);
     const [respuesta_db, setRespuesta_db] = useState('');
-    const [dia, setDia] = useState('');
-    function solicitud(){
-      var contesta
-      axios.get('http://localhost:4001/retomar_datos',{
+    const [dia, setDia] = useState('19');
+
+    function solicitud(dato_dia){
+      React.useEffect(()=>{
+        axios.get('http://localhost:4001/retomar_datos',{
         params:{
-          fecha: '17'
+          fecha: dato_dia
         }
       }).then(response=>{
         setRespuesta_db(response.data);
-        /*setRespuesta_db(previosState =>{return {
-          ...previosState,contesta
-        }});*/
         console.log(respuesta_db);
         //console.log(contesta);
       });
-      console.log(dia);
+      console.log(dato_dia)
+      },[])
     }
 
     const [areagrafica, setGrafica] = useState("");
@@ -76,13 +63,17 @@ function App() {
     function llenarlabels(data){
       var aux = [];
       var aux2 = [];
+      var aux3 = [];
       console.log(data.indoor.registros.length)
       for(var i=0;i<data.indoor.registros.length;i++){
         aux[i] = data.indoor.registros[i].tiempo;
         aux2[i] = data.indoor.registros[i].distancia;
+        aux3[i] = 0.049*(peso*2.2)*(data.indoor.registros[i].tiempo);
       }      
       setArreglolabels(aux);
       setGraphdata(aux2);
+      setGraphdata_2(aux3);
+
       //console.log(userData);
     }
 
@@ -137,6 +128,15 @@ function App() {
     //console.log(dataG);
    }
 
+   function funcion2(){
+    llenarlabels(respuesta_db);
+    setUserData(prevState=>({labels: arreglolabels, datasets:[{label: 'Calorias vs Tiempo', data: graphdata_2}]}));
+    //const dataG = { labels: arreglolabels, datasets:[{label:'Distancia vs Tiempo', data: graphdata}]};
+    setGrafica((<div><Line options={options} data={userData}/></div>));
+    //console.log(dataG);
+   }
+
+
 const enviar_peso =()=>{
     socket.emit('envio_peso',peso);
 };
@@ -148,7 +148,7 @@ const enviar_peso =()=>{
       <div style={{width:700}}>
       </div>
      <div>
-      <h2>bienvenido/a a Indoor Cycling Smart</h2>
+      <h2>Bienvenido/a a Indoor Cycling Smart</h2>
       <div>
         <label>
         Ingrese su nombre:
@@ -177,7 +177,7 @@ const enviar_peso =()=>{
         <select 
         name="dias" 
         id="dias"
-        onChange={(event)=>{setDia(event.target.value)}}>
+        onChange ={(event)=>{setDia(event.target.value);}}>
           <option value='17'>17</option>
           <option value='18'>18</option>
           <option value='19'>19</option>
@@ -187,7 +187,7 @@ const enviar_peso =()=>{
       <p></p>
 
       <div>
-        <button onClick={solicitud} >
+        <button onClick={solicitud(dia)} >
           Empezar
         </button>
       </div>
@@ -201,7 +201,7 @@ const enviar_peso =()=>{
 
       <div>
         <p></p>
-        <button>
+        <button onClick={funcion2}>
           Experimento #2  Calorias vs tiempo
         </button>
       </div>

@@ -50,6 +50,8 @@ var hoy = new Date();
 var mes = hoy.getMonth();
 var dia = hoy.getDate();
 
+var user_peso =0;
+
 const refer = database.ref('indoor/registros/'+mes + '/'+dia );
 
 let bandera = false;
@@ -77,6 +79,12 @@ app.get('/retomar_datos',(req,res)=>{
         res.json(Datos_recuperados);
     });
 });
+
+app.get('/getDatos',(req,res)=>{
+    var campoPeso = "peso";
+    data_arduino[campoPeso] = user_peso;
+    res.json(data_arduino); 
+})
 
 mySerial.on('open', function(){
     mySerial.write('s');
@@ -119,7 +127,9 @@ mySerial.on('data', function(data){
 
 io.on('connect', (socket) =>{
     socket.on('envio_peso',(data)=>{
-        console.log(data);
+
+        user_peso=data;
+        console.log(user_peso);
     })
 });
 
