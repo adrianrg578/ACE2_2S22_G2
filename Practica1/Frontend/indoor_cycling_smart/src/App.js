@@ -117,6 +117,9 @@ function App() {
       datasets:[{
         label: "Distancia vs Tiempo",
         data : [],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
       }]
    });
 
