@@ -7,3 +7,4 @@ Ingregrantes:
 201314439 Henrry David Bran Velasquez
 201900955 Diego Fernando Cortez Lopez
 201908321 Katerine Adalinda Santos Ramírez
+201908120 Julio José Orellana Ruíz
