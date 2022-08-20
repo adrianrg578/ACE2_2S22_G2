@@ -50,7 +50,7 @@ var hoy = new Date();
 var mes = hoy.getMonth();
 var dia = hoy.getDate();
 
-const refer = database.ref('indoor/registros/'+mes + '/18' );
+const refer = database.ref('indoor/registros/'+mes + '/'+dia );
 
 let bandera = false;
 
@@ -113,13 +113,15 @@ parser.on('data', function (data){
 
 
 mySerial.on('data', function(data){
-    io.emit('datos_arduino', data_arduino);
+    //io.emit('datos_arduino', data_arduino);
 
 });
 
-/*io.on('connection', (socket) =>{
-    socket.emit("contador",contador);
-});*/
+io.on('connect', (socket) =>{
+    socket.on('envio_peso',(data)=>{
+        console.log(data);
+    })
+});
 
 
 
