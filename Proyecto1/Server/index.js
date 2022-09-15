@@ -1,10 +1,10 @@
 var express = require('express')
-var coon = require('../DB/db')
+var coon = require('./db')
 
 const {SerialPort} = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline')
 
-const mySerial = new SerialPort({path:'COM4',baudRate: 9600});
+const mySerial = new SerialPort({path:'COM3',baudRate: 9600});
 const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\n' }))
 
 let datosAlmc = {};
@@ -22,7 +22,7 @@ mySerial.on('open', function(){
 parser.on('data', function (data){
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
-    let dateNow = hoy.toLocaleDateString('en-us', { dateStyle: 'short', timeStyle: 'short' })
+    let dateNow = hoy.toLocaleDateString('en-us', { dateStyle: 'short'})
 
     let dic1 = {}
     let dic2 = {}
@@ -101,6 +101,81 @@ app.post("/register", function(req, res){
     )
 })
 
+app.post("/datos_velocidad", function(req, res) {
+    coon.query(
+        `SELECT velocidad, fecha, no_golpes FROM datos WHERE IdUsuario = '${req.body.textUsuario}' AND velocidad != 'NULL';`,
+        function(err, result){
+            if (err){
+                throw err
+            }
+            else{
+                
+                datosAlmc = result
+                if (result.length == 0) 
+                {
+                    console.log("Usuario Invalido")
+                } else{
+                    //para usarlos como globaales adelante 
+                    //console.log("Usuario ingresado")
+                    //console.log(result)
+                    res.send({"data": result})
+                }
+            } 
+        }
+    )
+})
+
+app.post("/datos_ritmo", function(req, res) {
+    coon.query(
+        `SELECT ritmo, fecha, no_golpes FROM datos WHERE IdUsuario = '${req.body.textUsuario}' AND ritmo != 'NULL';`,
+        function(err, result){
+            if (err){
+                throw err
+            }
+            else{
+                
+                datosAlmc = result
+                if (result.length == 0) 
+                {
+                    console.log("Usuario Invalido")
+                } else{
+                    //para usarlos como globaales adelante 
+                    //console.log("Usuario ingresado")
+                    
+                    //console.log(result)
+                    res.send({"data": result})
+                }
+            } 
+        }
+    )
+})
+
+
+app.post("/datos_fuerza", function(req, res) {
+    coon.query(
+        `SELECT Fuerza,  fecha, no_golpes FROM datos WHERE IdUsuario = '${req.body.textUsuario}' AND Fuerza != 'NULL';`,
+        function(err, result){
+            if (err){
+                throw err
+            }
+            else{
+                
+                datosAlmc = result
+                if (result.length == 0) 
+                {
+                    console.log("Usuario Invalido")
+                } else{
+                    //para usarlos como globaales adelante 
+                    //console.log("Usuario ingresado")                    
+                    //console.log(result)
+                    res.send({"data": result})
+                }
+            } 
+        }
+    )
+})
+
+
 app.post("/Inicio_sesion", function(req, res){
     var query = coon.query(
         `SELECT Nombre, Edad, peso, Genero, Estatura FROM Usuario WHERE ((IdUser = '${req.body.textUsuario}') AND (Contra = '${req.body.textPass}'));`,
@@ -116,6 +191,7 @@ app.post("/Inicio_sesion", function(req, res){
                     console.log("Usuario o Contraseña Invalidos")
                 }else{
                     //para usarlos como globaales adelante 
+                    console.log("Usuario ingresado")
                     userIdOnline = req.body.textUsuario
                     nameIdOnline = datosAlmc[0].Nombre
                     edadOnline = datosAlmc[0].Edad
