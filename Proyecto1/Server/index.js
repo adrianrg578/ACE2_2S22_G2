@@ -24,7 +24,9 @@ parser.on('data', function (data){
     const hoy = new Date(tiempoTranscurrido);
     let dateNow = hoy.toLocaleDateString('en-us', { dateStyle: 'short', timeStyle: 'short' })
 
-    let dic = {}
+    let dic1 = {}
+    let dic2 = {}
+    let dic3 = {}
 
     let temp = data.toString();
     const datos = temp.split(",");
@@ -32,16 +34,41 @@ parser.on('data', function (data){
     if (datos.length > 1) 
     {
         if (datos[0] == "1") {
-            console.log(userIdOnline, " - " ,pesoOnline, " <- mis datos")
-            dic = {"velocidad":datos[0], "fuerza": datos[1], "ritmo":datos[2],
-            "tiempo": 141, "fecha": dateNow} 
-            /*var query = coon.query(
-                `INSERT INTO datos (velocidad, Fuerza, ritmo) VALUES ("${dic.velocidad}","${dic.fuerza}","${dic.ritmo}");`,
-                function(err){
-                    if (err) throw err
-                }
-            )*/
-            //console.log(dic)
+            if (userIdOnline != undefined) 
+            {
+                dic1 = {"fuerza": datos[1], "contador_golpes":datos[2], "fecha": dateNow} 
+                var query = coon.query(
+                    `INSERT INTO datos (IdUsuario, Fuerza, no_golpes, fecha) VALUES ("${userIdOnline}", "${dic1.fuerza}","${dic1.contador_golpes}","${dic1.fecha}");`,
+                    function(err){
+                        if (err) throw err
+                    }
+                )
+            }
+            
+        }else if (datos[0] == "2") 
+        {
+            if (userIdOnline != undefined) 
+            {
+                dic2 = {"velocidad": datos[1], "contador_golpes":datos[2], "fecha": dateNow} 
+                var query = coon.query(
+                    `INSERT INTO datos (IdUsuario, velocidad, no_golpes, fecha) VALUES ("${userIdOnline}", "${dic2.velocidad}","${dic2.contador_golpes}","${dic2.fecha}");`,
+                    function(err){
+                        if (err) throw err
+                    }
+                )
+            }
+        }else if (datos[0] == "3") 
+        {
+            if (userIdOnline != undefined) 
+            {
+                dic3 = {"ritmo": datos[1], "contador_golpes":datos[2], "fecha": dateNow} 
+                var query = coon.query(
+                    `INSERT INTO datos (IdUsuario, ritmo, no_golpes, fecha) VALUES ("${userIdOnline}", "${dic3.ritmo}","${dic3.contador_golpes}","${dic3.fecha}");`,
+                    function(err){
+                        if (err) throw err
+                    }
+                )
+            }
         }
     }
 });
@@ -61,14 +88,14 @@ app.get("/users", function(req, res){
 })
 
 app.post("/register", function(req, res){
-    
-    console.log(req.body)
     var query = coon.query(
         `INSERT INTO Usuario (IdUser, Contra, Nombre, Edad, peso, Genero, Estatura) VALUES ("${req.body.IdUser}","${req.body.Contra}","${req.body.Nombre}", ${req.body.Edad}, ${req.body.peso},"${req.body.Genero}",${req.body.Estatura});`,
         function(err, result){
             if (err) throw err
             else{
                 res.send(result)
+                //mensajes para el front o consola del explorador
+                console.log("Usuario: ", req.body.IdUser, " Registrado Correctamente")
             } 
         }
     )
@@ -76,7 +103,7 @@ app.post("/register", function(req, res){
 
 app.post("/Inicio_sesion", function(req, res){
     var query = coon.query(
-        `SELECT Nombre, Edad, peso, Genero, Estatura FROM Usuario WHERE IdUser = '${req.body.textUsuario}' AND Contra = '${req.body.textPass}';`,
+        `SELECT Nombre, Edad, peso, Genero, Estatura FROM Usuario WHERE ((IdUser = '${req.body.textUsuario}') AND (Contra = '${req.body.textPass}'));`,
         function(err, result){
             if (err){
                 throw err
@@ -88,7 +115,9 @@ app.post("/Inicio_sesion", function(req, res){
                 {
                     console.log("Usuario o Contraseña Invalidos")
                 }else{
-                    userIdOnline = datosAlmc[0].Nombre
+                    //para usarlos como globaales adelante 
+                    userIdOnline = req.body.textUsuario
+                    nameIdOnline = datosAlmc[0].Nombre
                     edadOnline = datosAlmc[0].Edad
                     pesoOnline = datosAlmc[0].peso
                     generoOnline = datosAlmc[0].Genero
