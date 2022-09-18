@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 export default function Navbar() {
     const estilo = {
         background: "rgba(0.5,.5,0.5,.3)",
+        "border" : "none",
     };
 
     return (
