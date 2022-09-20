@@ -1,9 +1,17 @@
+import socket from "../Socket/Socket";
+import React from "react";
+
 //Componentes
 import MenuEntreno from "./MenuEntreno";
 import Navbar from "./Navbar";
 
 
 export default function Dashboard() {
+    //Variables
+    const saved = localStorage.getItem("Usuario");
+    const dataUsuario = JSON.parse(saved)
+
+    //Estilos
     const heightStyle = {
         height: '90vh',
     };
@@ -19,7 +27,7 @@ export default function Dashboard() {
 
     return (
         <div style={backgroundStyle}>
-            
+
             <div className="container rounded">
                 <div className="row rounded d-flex justify-content-center align-items-center" style={heightStyle} >
                     <div className="col-10 rounded mx-auto">

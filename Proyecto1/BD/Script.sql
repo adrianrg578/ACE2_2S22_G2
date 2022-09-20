@@ -8,7 +8,7 @@ CREATE TABLE Usuario (
 	peso INT NOT NULL,
 	Genero VARCHAR(15) NOT NULL,
 	Estatura DECIMAL(3,2) NOT NULL
-)
+);
 
 CREATE TABLE datos (
 	IdEntreno INT auto_increment PRIMARY KEY,
@@ -20,7 +20,7 @@ CREATE TABLE datos (
 	fecha VARCHAR(30) NULL,
 	no_golpes VARCHAR(30) NULL,
 	FOREIGN KEY (IdUsuario) REFERENCES Usuario(IdUser)
-)
+);
 
 	
 DROP TABLE datos;
