@@ -30,16 +30,13 @@ export default function Ritmo() {
     console.log(frecuencia)
   };
 
-
   useEffect(() => {
     socket.on("ritmo", (arg) => {
       setRitmo(...ritmo, arg);
     });
   })
 
-
-
-  const gageCalc = bmi => {
+  /*const gageCalc = bmi => {
     var result = ritmo;
     if (bmi >= 16 && bmi <= 18.5) {
       result = getPercentage(bmi, 16, 18.5, 0);
@@ -55,7 +52,7 @@ export default function Ritmo() {
     return (
       (bmi - lowerBound) / (upperBound - lowerBound) / 3 + segmentAdjustment
     );
-  }
+  }*/
 
   return (
     <div className="container">

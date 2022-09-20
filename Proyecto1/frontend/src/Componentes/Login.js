@@ -2,7 +2,6 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 //Componentes
 import LoginForm from "./LoginForm"
-import Navbar from "./Navbar"
 
 export default function Login() {
   //Estilos
@@ -21,7 +20,7 @@ export default function Login() {
 
   return (
     <div style={backgroundStyle}>
-      <Navbar/>
+      
       <div className="container">
         <div className="row d-flex rounded justify-content-center align-items-center" style={heightStyle}>
           <div className="col-6 rounded  d-flex justify-content-center align-items-center" style={BoxStyle}>
@@ -32,3 +31,5 @@ export default function Login() {
     </div>
   );
 }
+
+//<Navbar/>

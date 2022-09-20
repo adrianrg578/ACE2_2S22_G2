@@ -1,6 +1,25 @@
 var express = require('express')
 var coon = require('./db')
 
+var app = express()
+const { createServer } = require("http");
+const cors = require("cors");
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+//Configuracion de cors con Socket.io
+const server = { createServer }.createServer(app);
+const io = require("socket.io")(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
+    }
+});
+
 const {SerialPort} = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline')
 
@@ -36,6 +55,11 @@ parser.on('data', function (data){
         if (datos[0] == "1") {
             if (userIdOnline != undefined) 
             {
+                fuerzaKG = (parseFloat(datos[1])/(9,81.))
+                io.on("connection", (socket) => {
+                    let i = 37;
+                    socket.emit("fuerza", fuerzaKG);
+                });
                 dic1 = {"fuerza": datos[1], "contador_golpes":datos[2], "fecha": dateNow} 
                 var query = coon.query(
                     `INSERT INTO datos (IdUsuario, Fuerza, no_golpes, fecha) VALUES ("${userIdOnline}", "${dic1.fuerza}","${dic1.contador_golpes}","${dic1.fecha}");`,
@@ -48,7 +72,12 @@ parser.on('data', function (data){
         }else if (datos[0] == "2") 
         {
             if (userIdOnline != undefined) 
-            {
+            {  
+                velocidad = parseFloat(datos[1])
+                io.on("connection", (socket) => {
+                    let i = 45;
+                    socket.emit("vel", velocidad);
+                });
                 dic2 = {"velocidad": datos[1], "contador_golpes":datos[2], "fecha": dateNow} 
                 var query = coon.query(
                     `INSERT INTO datos (IdUsuario, velocidad, no_golpes, fecha) VALUES ("${userIdOnline}", "${dic2.velocidad}","${dic2.contador_golpes}","${dic2.fecha}");`,
@@ -61,6 +90,11 @@ parser.on('data', function (data){
         {
             if (userIdOnline != undefined) 
             {
+                ritmo = (parseInt(datos[1]))
+                io.on("connection", (socket) => {
+                    let i = 37;
+                    socket.emit("fuerza", ritmo);
+                });
                 dic3 = {"ritmo": datos[1], "contador_golpes":datos[2], "fecha": dateNow} 
                 var query = coon.query(
                     `INSERT INTO datos (IdUsuario, ritmo, no_golpes, fecha) VALUES ("${userIdOnline}", "${dic3.ritmo}","${dic3.contador_golpes}","${dic3.fecha}");`,
@@ -73,41 +107,25 @@ parser.on('data', function (data){
     }
 });
 
-var app = express()
-const { createServer } = require("http");
-const cors = require("cors");
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-
-//Configuracion de cors con Socket.io
-const server = { createServer }.createServer(app);
-const io = require("socket.io")(server, {
-    cors: {
-        origin: "http://localhost:3000",
-        methods: ["GET", "POST"],
-        allowedHeaders: ["my-custom-header"],
-        credentials: true
-    }
-});
 
 //Conexion cliente-Servidor
-io.on("connection", (socket) => {
-    let i = 30;
+/*io.on("connection", (socket) => {
+    let i = 31;
     socket.emit("fuerza", i++);
 });
 
 io.on("connection", (socket) => {
-    let i = 30;
-    socket.emit("velocidad", i++);
+    let i = 4;
+    //velocidad = parseFloat(datos[1])
+    socket.emit("vel", i++);
 });
 
 
 io.on("connection", (socket) => {
     let i = 0.3;
     socket.emit("ritmo", i);
-});
+});*/
 
 //Registrar usuario
 io.on("connection", (socket) => {

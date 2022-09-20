@@ -32,7 +32,7 @@ export default function Fuerza() {
   });
 
   const sendDashboard = async () => {
-    alert("HOLA SOY FUERZA")
+    console.log("HOLA SOY FUERZA")
   }
 
   return (

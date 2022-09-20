@@ -28,10 +28,10 @@ export default function Velocidad() {
   };
 
   //Conexion
-  socket.on("velocidad", (arg) => {
-    setVelocidad(...velocidad, arg); 
+  socket.on("vel", (arg) => {
+    setVelocidad(...velocidad, arg); // world
   });
-
+  
   const sendDashboard = async () => {
     alert("HOLA SOY Velocidad")
   }

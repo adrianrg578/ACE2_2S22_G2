@@ -2,7 +2,6 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 //Componentes
 import RegistroForm from "./RegistroForm";
-import Navbar from "./Navbar"
 
 export default function Registro() {
   const heightStyle = {
@@ -20,7 +19,7 @@ export default function Registro() {
 
   return (
     <div style={backgroundStyle}>
-      <Navbar/>
+      
       <div className="container">
         <div className="row d-flex rounded justify-content-center align-items-center" style={heightStyle}>
           <div className="col-6 rounded  d-flex justify-content-center align-items-center" style={BoxStyle}>
@@ -31,3 +30,4 @@ export default function Registro() {
     </div>
   );
 }
+//<Navbar/>
