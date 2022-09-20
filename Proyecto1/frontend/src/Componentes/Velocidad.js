@@ -1,11 +1,15 @@
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/css/bootstrap.min.css";
+import React, {useState} from 'react';
+import socket from "../Socket/Socket";
 
 //Componentes
 
 export default function Velocidad() {
   //Var
-  var progreso = 0;
+
+  //Hooks
+  const [velocidad, setVelocidad] = useState("");
 
   //Estilos
   const BoxStyle = {
@@ -23,21 +27,25 @@ export default function Velocidad() {
     "color": "white"
   };
 
+  //Conexion
+  socket.on("velocidad", (arg) => {
+    setVelocidad(...velocidad, arg); 
+  });
+
   const sendDashboard = async () => {
-    progreso += 50;
-    alert(progreso)
+    alert("HOLA SOY Velocidad")
   }
   return (
     <div>
       <div className="container text-center" style={BoxStyle}>
         <div className="row mb-5">
           <div className="col-sm-4 mx-auto">
-            <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>123 kg</p>
+            <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{velocidad} kg</p>
           </div>
         </div>
         <div className="row mb-5">
           <div className="col-sm-10 mx-auto">
-            <ProgressBar variant="info" animated now={100} />
+            <ProgressBar variant="info" animated now={velocidad} />
           </div>
         </div>
         <div className="row mb-5">

@@ -1,18 +1,43 @@
-import React, {useState} from 'react';
+import GaugeChart from "react-gauge-chart";
+import React, { useEffect, useState } from 'react';
 import socket from "../Socket/Socket";
 
-import GaugeChart from "react-gauge-chart";
 
 export default function Ritmo() {
   //Hooks
-  const [bmi, setBmi] = useState(0);
+  const [frecuencia, setFrecuencia] = useState({
+    frecuencia: ""
+  });
   const [ritmo, setRitmo] = useState("");
 
-  const handleChangeBmi = event => setBmi(event.target.value);
+  //Estilos
+  const InputStyle = {
+    "backgroundColor": "rgba(5,.5,0.5,.3)",
+    "border": "none",
+    "color": "white"
+  };
 
-  socket.on("ritmo", (arg) => {
-    setRitmo(...ritmo, arg); // world
-  });
+  const BoxStyle = {
+    background: "rgba(5,.5,0.5,.3)"
+  };
+
+  //Funciones
+  const handleInputChange = (e) => {
+    setFrecuencia({
+      ...frecuencia,
+      [e.target.name]: e.target.value
+    })
+    console.log(frecuencia)
+  };
+
+
+  useEffect(() => {
+    socket.on("ritmo", (arg) => {
+      setRitmo(...ritmo, arg);
+    });
+  })
+
+
 
   const gageCalc = bmi => {
     var result = ritmo;
@@ -33,14 +58,40 @@ export default function Ritmo() {
   }
 
   return (
-    <div>
-      <input value={bmi} onChange={handleChangeBmi} />
-      <GaugeChart
-        id="gauge-chart"
-        percent={gageCalc(bmi)}
-        nrOfLevels={3}
-        colors={["#FFFF00", "#228B22", "#FF0000"]}
-      />
+    <div className="container">
+      <div className="row d-flex rounded justify-content-center align-items-center" >
+        <div className="col-6 rounded  d-flex justify-content-center align-items-center" >
+          <div className="container">
+            <form className="container-flex">
+
+              <div className="mb-3 row" >
+                <div className="col-10 mx-auto">
+                  <input
+                    style={InputStyle}
+                    className="form-control-lg"
+                    placeholder="Frecuencia 0.5 a 1.5 seg"
+                    name="frecuencia"
+                    onChange={handleInputChange}/>
+                </div>
+                <div className="col-sm-2 mx-auto">
+                  <button style={InputStyle} type="button" class="btn outline-dark">Empezar Ritmo</button>
+                </div>
+              </div>
+
+              <div className="mb-5 row rounded" style={BoxStyle}>
+                <div className="col-sm-15 mx-auto">
+                  <GaugeChart
+                    percent={ritmo}
+                    nrOfLevels={3}
+                    colors={["#566573", "#2C3E50", "#566573"]}
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+

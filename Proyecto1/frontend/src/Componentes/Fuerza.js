@@ -27,7 +27,7 @@ export default function Fuerza() {
   };
 
   //Conexion
-  socket.on("hello", (arg) => {
+  socket.on("fuerza", (arg) => {
     setFuerza(...fuerza, arg); // world
   });
 
@@ -44,7 +44,7 @@ export default function Fuerza() {
       </div>
       <div className="row mb-5">
         <div className="col-sm-10 mx-auto">
-          <ProgressBar variant="info" animated now={70} />
+          <ProgressBar variant="info" animated now={fuerza} />
         </div>
       </div>
       <div className="row mb-5">

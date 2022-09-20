@@ -76,10 +76,10 @@ parser.on('data', function (data){
 var app = express()
 const { createServer } = require("http");
 const cors = require("cors");
-const { measureMemory } = require('vm');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 //Configuracion de cors con Socket.io
 const server = { createServer }.createServer(app);
@@ -94,12 +94,18 @@ const io = require("socket.io")(server, {
 
 //Conexion cliente-Servidor
 io.on("connection", (socket) => {
-    let i = 7;
-    socket.emit("hello", i++);
+    let i = 30;
+    socket.emit("fuerza", i++);
 });
 
 io.on("connection", (socket) => {
-    let i = 0.4;
+    let i = 30;
+    socket.emit("velocidad", i++);
+});
+
+
+io.on("connection", (socket) => {
+    let i = 0.3;
     socket.emit("ritmo", i);
 });
 

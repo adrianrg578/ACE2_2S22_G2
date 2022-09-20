@@ -1,3 +1,4 @@
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -20,5 +21,7 @@ root.render(
     </Routes>
   </BrowserRouter>
 );
+
+serviceWorkerRegistration.register();
 
 reportWebVitals();

@@ -5,6 +5,7 @@ import LoginForm from "./LoginForm"
 import Navbar from "./Navbar"
 
 export default function Login() {
+  //Estilos
   const heightStyle = {
     height: '90vh',
   };
