@@ -2,7 +2,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom"
 import socket from "../Socket/Socket";
 import React, {useState} from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 export default function RegistroForm() {
     //Variables
@@ -10,7 +9,7 @@ export default function RegistroForm() {
 
     //Hooks
     const [dataUsuario, setDataUsuario] = useState({
-        IdUser: uuidv4(),
+        IdUser: "",
         Contra: "",
         Nombre: "",
         Edad: "",
@@ -57,8 +56,18 @@ export default function RegistroForm() {
                         <input 
                             style={InputStyle} type="text" 
                             className="form-control" 
-                            name="Nombre" 
+                            name="IdUser" 
                             placeholder="Username" 
+                            onChange={handleInputChange}/>
+                    </div>
+                </div>
+                <div className="mb-3 row" >
+                    <div className="col-sm-10 mx-auto">
+                        <input 
+                            style={InputStyle} type="text" 
+                            className="form-control" 
+                            name="Nombre" 
+                            placeholder="Nombre" 
                             onChange={handleInputChange}/>
                     </div>
                 </div>

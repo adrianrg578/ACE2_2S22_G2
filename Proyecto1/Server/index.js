@@ -153,7 +153,7 @@ io.on("connection", (socket) => {
 io.on("connection", (socket) => {
     socket.on("login", (arg, callback) => {
         var query = coon.query(
-            `SELECT IdUser, Nombre, Edad, peso, Genero, Estatura FROM Usuario WHERE ((Nombre = '${arg.Nombre}') AND (Contra = '${arg.Contra}'));`,
+            `SELECT IdUser, Nombre, Edad, peso, Genero, Estatura FROM Usuario WHERE ((IdUser = '${arg.IdUser}') AND (Contra = '${arg.Contra}'));`,
             function (err, result) {
                 if (err) {
                     throw err
@@ -174,7 +174,7 @@ io.on("connection", (socket) => {
                         });
 
                         console.log("Usuario ingresado")
-                        userIdOnline = arg.Nombre
+                        userIdOnline = arg.IdUser
                         nameIdOnline = datosAlmc[0].Nombre
                         edadOnline = datosAlmc[0].Edad
                         pesoOnline = datosAlmc[0].peso

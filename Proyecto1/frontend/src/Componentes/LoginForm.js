@@ -10,7 +10,7 @@ export default function LoginForm() {
     //Hooks
     const [dataUsuario, setDataUsuario] = useState({
         Contra: "",
-        Nombre: "",
+        IdUser: "",
     });
 
     //Estilos
@@ -61,7 +61,7 @@ export default function LoginForm() {
                             style={InputStyle} 
                             type="text" 
                             className="form-control" 
-                            name="Nombre" 
+                            name="IdUser" 
                             placeholder="Username" 
                             onChange={handleInputChange}/>
                     </div>

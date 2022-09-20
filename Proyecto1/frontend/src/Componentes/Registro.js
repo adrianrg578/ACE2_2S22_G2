@@ -5,7 +5,7 @@ import RegistroForm from "./RegistroForm";
 
 export default function Registro() {
   const heightStyle = {
-    height: '90vh',
+    height: '100vh',
   };
 
   const backgroundStyle = {
@@ -13,7 +13,7 @@ export default function Registro() {
   };
 
   const BoxStyle = {
-    height: '80vh',
+    height: '90vh',
     background: "rgba(5,.5,0.5,.3)"
   };
 
