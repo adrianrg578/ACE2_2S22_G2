@@ -5,7 +5,6 @@
 #include "I2Cdev.h"
 #include "MPU6050.h"
 #include "Wire.h"
-
 // La dirección del MPU6050 puede ser 0x68 o 0x69, dependiendo
 // del estado de AD0. Si no se especifica, 0x68 estará implicito
 MPU6050 sensor;
@@ -59,7 +58,7 @@ unsigned long t_e = 0;
 
 unsigned long tiempo1 = 0;
 // Esta variable se cambia dependiendo de la luz que este
-int intensidad_luz = 450;
+int intensidad_luz = 200;
 //Contador de tiempo para la velocidad
 unsigned long contadorVelocidad = 0;
 
@@ -73,6 +72,9 @@ float velocidad_golpe;
 
 
 void setup() {
+
+  //Configuracion Wifi
+
   //Configuramos pines
   pinMode(BV, INPUT);
   pinMode(BR, INPUT);
@@ -123,7 +125,7 @@ void loop() {
   //Mediante un switch hacemos los modulos de velocidad,ritmo,golpe,libre
   switch (rango) {
     case 1:
-      //Serial.println("fuerza"); 
+      //Serial.println("fuerza");
       contadorGolpes = 0;
       //
       //asignamos la entrada analogica de la fotoresistencia esta da valores de 700 para arriba en poca luz
@@ -133,7 +135,7 @@ void loop() {
       delay(200);
       //En esta parte del if configuramos la luz en mi situacion con 700 de sombra da bien para otro ambiente ahy que cambiar y ver la variacion
       //Por ejemplo cuando subo la pera y tapo la luz me da una salida analogica mayor a 700 cuando destapo osea la quito me da valores menores de 700
-      
+
       tiempo1 = millis();
 
       if (aV > intensidad_luz) {
@@ -178,7 +180,7 @@ void loop() {
     case 3:
       //Serial.println("ritmo");
       contadorGolpes = 0;
-      
+
       t_f = millis();
       if (t_f > t_i) {
         t_e = t_f - t_i;
@@ -194,7 +196,7 @@ void loop() {
         datos.concat(",");
         datos.concat(contadorGolpes);
         Serial.println(datos);
-        
+
         delay(3000);
         t_i = millis();
       }

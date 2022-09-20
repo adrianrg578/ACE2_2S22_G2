@@ -37,8 +37,8 @@ mySerial.on('open', function () {
     mySerial.write('s');
     console.log('Puerto serial abierto');
 });
-
-/*parser.on('data', function (data){
+/*
+parser.on('data', function (data){
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
     let dateNow = hoy.toLocaleDateString('en-us', { dateStyle: 'short'})
@@ -55,6 +55,7 @@ mySerial.on('open', function () {
         if (datos[0] == "1") {
             if (userIdOnline != undefined) 
             {
+                console.log("Fuerza")
                 fuerzaKG = (parseFloat(datos[1])/(9,81.))
                 io.on("connection", (socket) => {
                     let i = 37;
@@ -69,8 +70,7 @@ mySerial.on('open', function () {
                 )
             }
             
-        }else if (datos[0] == "2") 
-        {
+        } else if (datos[0] == "2") {
             if (userIdOnline != undefined) 
             {  
                 velocidad = parseFloat(datos[1])
@@ -86,8 +86,7 @@ mySerial.on('open', function () {
                     }
                 )
             }
-        }else if (datos[0] == "3") 
-        {
+        } else if (datos[0] == "3") {
             if (userIdOnline != undefined) 
             {
                 ritmo = (parseInt(datos[1]))
@@ -105,11 +104,10 @@ mySerial.on('open', function () {
             }
         }
     }
-});*/
-
-
+});
 
 //Conexion cliente-Servidor
+*/
 io.on("connection", (socket) => {
     //let i = 31;
     //socket.emit("fuerza", i++);
@@ -153,7 +151,9 @@ io.on("connection", (socket) => {
     socket.emit("ritmo", i);
 });
 
+
 //Registrar usuario
+
 io.on("connection", (socket) => {
     socket.on("registro", (arg, callback) => {
         var query = coon.query(
@@ -183,10 +183,12 @@ io.on("connection", (socket) => {
             function (err, result) {
                 if (err) {
                     throw err
-                }
-                else {
+                } else {
+                    
                     datosAlmc = result
+                    console.log(result)
                     if (result.length == 0) {
+                        
                         console.log("Usuario o Contraseña Invalidos")
 
                         callback({
