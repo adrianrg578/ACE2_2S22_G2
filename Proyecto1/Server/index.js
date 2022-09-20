@@ -20,10 +20,10 @@ const io = require("socket.io")(server, {
     }
 });
 
-const {SerialPort} = require('serialport');
+const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline')
 
-const mySerial = new SerialPort({path:'COM3',baudRate: 9600});
+const mySerial = new SerialPort({ path: 'COM3', baudRate: 9600 });
 const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\n' }))
 
 let datosAlmc = {};
@@ -33,12 +33,12 @@ let pesoOnline;
 let generoOnline;
 let estaturaOnline;
 
-mySerial.on('open', function(){
+mySerial.on('open', function () {
     mySerial.write('s');
     console.log('Puerto serial abierto');
 });
 
-parser.on('data', function (data){
+/*parser.on('data', function (data){
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
     let dateNow = hoy.toLocaleDateString('en-us', { dateStyle: 'short'})
@@ -105,14 +105,40 @@ parser.on('data', function (data){
             }
         }
     }
-});
+});*/
 
 
 
 //Conexion cliente-Servidor
-/*io.on("connection", (socket) => {
-    let i = 31;
-    socket.emit("fuerza", i++);
+io.on("connection", (socket) => {
+    //let i = 31;
+    //socket.emit("fuerza", i++);
+    parser.on('data', function (data) {
+        const tiempoTranscurrido = Date.now();
+        const hoy = new Date(tiempoTranscurrido);
+        let dateNow = hoy.toLocaleDateString('en-us', { dateStyle: 'short' })
+
+        let dic1 = {}
+
+        let temp = data.toString();
+        const datos = temp.split(",");
+
+        if (datos.length > 1) {
+            if (userIdOnline != undefined) {
+
+                fuerzaKG = (parseFloat(datos[1]) / (9, 81.))
+                socket.emit("fuerza", fuerzaKG);
+                
+                dic1 = { "fuerza": datos[1], "contador_golpes": datos[2], "fecha": dateNow }
+                var query = coon.query(
+                    `INSERT INTO datos (IdUsuario, Fuerza, no_golpes, fecha) VALUES ("${userIdOnline}", "${dic1.fuerza}","${dic1.contador_golpes}","${dic1.fecha}");`,
+                    function (err) {
+                        if (err) throw err
+                    }
+                )
+            }
+        }
+    });
 });
 
 io.on("connection", (socket) => {
@@ -125,7 +151,7 @@ io.on("connection", (socket) => {
 io.on("connection", (socket) => {
     let i = 0.3;
     socket.emit("ritmo", i);
-});*/
+});
 
 //Registrar usuario
 io.on("connection", (socket) => {
@@ -141,12 +167,12 @@ io.on("connection", (socket) => {
                 else {
                     console.log("Usuario: ", arg.Nombre, " Registrado Correctamente")
                     callback({
-                        message: "El Usuario "+ arg.Nombre+ " fue registrado correctamente"
+                        message: "El Usuario " + arg.Nombre + " fue registrado correctamente"
                     });
                 }
             }
         )
-    }); 
+    });
 });
 
 //Iniciar sesion
@@ -164,7 +190,7 @@ io.on("connection", (socket) => {
                         console.log("Usuario o Contraseña Invalidos")
 
                         callback({
-                            message:"Usuario o Contraseña Invalidos"
+                            message: "Usuario o Contraseña Invalidos"
                         });
                     } else {
                         //para usarlos como globaales adelante 
@@ -184,7 +210,7 @@ io.on("connection", (socket) => {
                 }
             }
         )
-    }); 
+    });
 });
 
 
