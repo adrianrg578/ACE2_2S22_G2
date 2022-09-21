@@ -32,7 +32,6 @@ let edadOnline;
 let pesoOnline;
 let generoOnline;
 let estaturaOnline;
-
 mySerial.on('open', function () {
     mySerial.write('s');
     console.log('Puerto serial abierto');

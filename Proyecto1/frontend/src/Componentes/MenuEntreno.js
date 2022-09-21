@@ -7,6 +7,7 @@ import Velocidad from "./Velocidad";
 import Fuerza from "./Fuerza";
 import Ritmo from "./Ritmo";
 import InfoUsuario from "./InfoUsuario";
+import Graficas from "./Graficas";
 
 export default function MenuEntreno() {
     const estilo = {
@@ -33,6 +34,9 @@ export default function MenuEntreno() {
                 </Tab>
                 <Tab eventKey="infou" title="Perfil">
                     <InfoUsuario />
+                </Tab>
+                <Tab eventKey="historia" title="Historial">
+                    <Graficas />
                 </Tab>
             </Tabs>
         </div>
