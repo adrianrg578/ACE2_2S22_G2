@@ -1,9 +1,11 @@
 var express = require('express')
 var coon = require('./db')
+const db2 = require('./db2');
 
 var app = express()
 const { createServer } = require("http");
 const cors = require("cors");
+const { copyFileSync } = require('fs');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,11 +22,11 @@ const io = require("socket.io")(server, {
     }
 });
 
-const { SerialPort } = require('serialport');
+/*const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline')
 
 const mySerial = new SerialPort({ path: 'COM3', baudRate: 9600 });
-const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\n' }))
+const parser = mySerial.pipe(new ReadlineParser({ delimiter: '\n' }))*/
 
 let datosAlmc = {};
 let userIdOnline;
@@ -32,10 +34,11 @@ let edadOnline;
 let pesoOnline;
 let generoOnline;
 let estaturaOnline;
-mySerial.on('open', function () {
+
+/*mySerial.on('open', function () {
     mySerial.write('s');
     console.log('Puerto serial abierto');
-});
+});*/
 /*
 parser.on('data', function (data){
     const tiempoTranscurrido = Date.now();
@@ -104,51 +107,93 @@ parser.on('data', function (data){
         }
     }
 });
+*/
+
+//Peticiones al db
+async function dataFuerza(id){ //Fuerza
+	let datos = {
+        fuerza: 0
+    };
+    try {
+        const [datoa, field] = await (await db2.then()).execute(
+            `SELECT IdEntreno, Fuerza FROM datos WHERE IdUsuario = "${id}" AND Fuerza>0 ORDER BY IdEntreno DESC LIMIT 1;`
+            
+        );
+        
+        datos.fuerza = datoa[0].Fuerza
+        
+    } catch (err) {
+        console.log(err);
+    }
+    console.log("##########################") 
+    console.log((datos.fuerza/(9.81)).toFixed(2))
+    console.log("##########################")
+	return (datos.fuerza/(9.81)).toFixed(2);
+}
+
+async function dataVelocidad(){ //Velocidad
+	let datos = {
+        velocidad: 0
+    };
+    try {
+        const [data, field] = await (await db2.then()).execute(
+            `SELECT IdEntreno, velocidad FROM datos WHERE IdUsuario = "${userIdOnline}" AND velocidad>0 ORDER BY IdEntreno DESC LIMIT 1;`
+        );
+        
+        datos.velocidad = data[0].velocidad
+        
+    } catch (err) {
+        console.log(err);
+    }
+    console.log("*************************")
+    console.log(datos.velocidad)
+    console.log("*************************")
+	return (datos.velocidad);
+}
+
+async function dataRitmo(){ //Velocidad
+	let datos = {
+        ritmo: 0,
+        tiempo: 0
+    };
+    try {
+        const [data, field] = await (await db2.then()).execute(
+            `SELECT IdEntreno, ritmo, tiempo FROM datos WHERE IdUsuario = "${userIdOnline}"  AND ritmo>0 ORDER BY IdEntreno DESC LIMIT 1;`
+        );
+        datos.ritmo = data[0].ritmo
+        datos.tiempo = data[0].tiempo
+        
+    } catch (err) {
+        console.log(err);
+    }
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    console.log(datos.ritmo)
+    console.log(datos.tiempo)
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+	return (datos);
+}
 
 //Conexion cliente-Servidor
-*/
-io.on("connection", (socket) => {
-    //let i = 31;
-    //socket.emit("fuerza", i++);
-    parser.on('data', function (data) {
-        const tiempoTranscurrido = Date.now();
-        const hoy = new Date(tiempoTranscurrido);
-        let dateNow = hoy.toLocaleDateString('en-us', { dateStyle: 'short' })
-
-        let dic1 = {}
-
-        let temp = data.toString();
-        const datos = temp.split(",");
-
-        if (datos.length > 1) {
-            if (userIdOnline != undefined) {
-
-                fuerzaKG = (parseFloat(datos[1]) / (9, 81.))
-                socket.emit("fuerza", fuerzaKG);
-                
-                dic1 = { "fuerza": datos[1], "contador_golpes": datos[2], "fecha": dateNow }
-                var query = coon.query(
-                    `INSERT INTO datos (IdUsuario, Fuerza, no_golpes, fecha) VALUES ("${userIdOnline}", "${dic1.fuerza}","${dic1.contador_golpes}","${dic1.fecha}");`,
-                    function (err) {
-                        if (err) throw err
-                    }
-                )
-            }
-        }
-    });
+/*io.on('connection', async  function(socket) {
+	console.log("conectadoFuerza!");
+    socket.emit('fuerza', await dataFuerza(userIdOnline));
 });
 
-io.on("connection", (socket) => {
-    let i = 4;
-    //velocidad = parseFloat(datos[1])
-    socket.emit("vel", i++);
+io.on("connection", async function(socket) {
+    console.log("conectadoVelocidad!");
+    socket.emit("velocidad", await dataVelocidad());
+});*/
+
+io.on("connection", async function(socket) {
+    console.log("conectadoRitmo!"); 
+    socket.emit("ritmo", await dataRitmo());
 });
 
 
-io.on("connection", (socket) => {
-    let i = 0.3;
+/*io.on("connection", (socket) => {
+    let i = 0.6;
     socket.emit("ritmo", i);
-});
+});*/
 
 
 //Registrar usuario
@@ -270,8 +315,7 @@ app.post("/datos_ritmo", function (req, res) {
             if (err) {
                 throw err
             }
-            else {
-
+            else { 
                 datosAlmc = result
                 if (result.length == 0) {
                     console.log("Usuario Invalido")
@@ -283,7 +327,7 @@ app.post("/datos_ritmo", function (req, res) {
                     res.send({ "data": result })
                 }
             }
-        }
+        }  
     )
 })
 
@@ -340,7 +384,7 @@ app.post("/Inicio_sesion", function (req, res) {
 })
 
 
-server.listen(
+server.listen( 
     5000,
     () => console.log('Server Port: ', 5000)
 )

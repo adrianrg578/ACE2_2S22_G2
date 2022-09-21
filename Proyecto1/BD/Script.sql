@@ -1,5 +1,14 @@
 USE puchingbag;
 
+SELECT * FROM Usuario WHERE IdUser = "Juanito";
+SELECT IdEntreno, Fuerza FROM datos WHERE IdUsuario = "Juanito" AND Fuerza>0 ORDER BY IdEntreno DESC LIMIT 1;
+SELECT IdEntreno, velocidad FROM datos WHERE IdUsuario = "Juanito" AND velocidad>0 ORDER BY IdEntreno DESC LIMIT 1;
+SELECT IdEntreno, ritmo, tiempo FROM datos WHERE IdUsuario = "Juanito" AND ritmo>0 ORDER BY IdEntreno DESC LIMIT 1;
+INSERT INTO datos (IdUsuario, Fuerza, no_golpes, fecha) VALUES ("Juanito", "32","9","9/20/22");
+INSERT INTO datos (IdUsuario, velocidad, no_golpes, fecha) VALUES ("Juanito", "56","9","9/20/22");
+INSERT INTO datos (IdUsuario, ritmo, tiempo, no_golpes, fecha) VALUES ("Juanito", "1","0.7","9","9/20/22");
+
+Select * from datos;
 CREATE TABLE Usuario (
 	IdUser VARCHAR(60) PRIMARY KEY,
 	Contra VARCHAR(60) NOT NULL,
