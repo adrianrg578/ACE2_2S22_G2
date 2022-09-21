@@ -6,8 +6,8 @@ import MenuEntreno from "./MenuEntreno";
 
 export default function Dashboard() {
     //Variables
-    //const saved = localStorage.getItem("Usuario");
-    //const dataUsuario = JSON.parse(saved)
+    const saved = localStorage.getItem("Usuario");
+    const dataUsuario = JSON.parse(saved)
 
     //Estilos
     const heightStyle = {
@@ -29,6 +29,7 @@ export default function Dashboard() {
             <div className="container rounded">
                 <div className="row rounded d-flex justify-content-center align-items-center" style={heightStyle} >
                     <div className="col-10 rounded mx-auto">
+                        <h1 className="text-center text-white">Bienvenido {dataUsuario.Nombre}</h1>
                         <h2 className="text-center text-white">Elija el tipo de entrenamiento</h2>
                     </div>
                     <div className="col-10 rounded mx-auto" style={BoxStyle}>

@@ -78,7 +78,7 @@ export default function LoginForm() {
                     </div>
                 </div>
                 <div className="col-2 mx-auto">
-                    <button style={InputStyle}  type="button" onClick={()=>sendDashboard()} class="btn outline-dark">Igresar</button>
+                    <button style={InputStyle}  type="button" onClick={()=>sendDashboard()} class="btn outline-dark">Ingresar</button>
                 </div>
             </form>
         </div>

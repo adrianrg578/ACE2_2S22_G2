@@ -6,6 +6,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Velocidad from "./Velocidad";
 import Fuerza from "./Fuerza";
 import Ritmo from "./Ritmo";
+import InfoUsuario from "./InfoUsuario";
 
 export default function MenuEntreno() {
     const estilo = {
@@ -29,6 +30,9 @@ export default function MenuEntreno() {
                 </Tab>
                 <Tab eventKey="ritmo" title="Ritmo">
                     <Ritmo />
+                </Tab>
+                <Tab eventKey="infou" title="Perfil">
+                    <InfoUsuario />
                 </Tab>
             </Tabs>
         </div>
