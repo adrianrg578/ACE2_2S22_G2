@@ -38,8 +38,8 @@ let estaturaOnline;
 /*mySerial.on('open', function () {
     mySerial.write('s');
     console.log('Puerto serial abierto');
-});*/
-/*
+});
+
 parser.on('data', function (data){
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
@@ -106,88 +106,62 @@ parser.on('data', function (data){
             }
         }
     }
-});
-*/
+});*/
+
 
 //Peticiones al db
-async function dataFuerza(id){ //Fuerza
+async function dataFuerza(){ //Fuerza
 	let datos = {
-        fuerza: 0
-    };
-    try {
-        const [datoa, field] = await (await db2.then()).execute(
-            `SELECT IdEntreno, Fuerza FROM datos WHERE IdUsuario = "${id}" AND Fuerza>0 ORDER BY IdEntreno DESC LIMIT 1;`
-            
-        );
-        
-        datos.fuerza = datoa[0].Fuerza
-        
-    } catch (err) {
-        console.log(err);
-    }
-    console.log("##########################") 
-    console.log((datos.fuerza/(9.81)).toFixed(2))
-    console.log("##########################")
-	return (datos.fuerza/(9.81)).toFixed(2);
-}
-
-async function dataVelocidad(){ //Velocidad
-	let datos = {
-        velocidad: 0
-    };
-    try {
-        const [data, field] = await (await db2.then()).execute(
-            `SELECT IdEntreno, velocidad FROM datos WHERE IdUsuario = "${userIdOnline}" AND velocidad>0 ORDER BY IdEntreno DESC LIMIT 1;`
-        );
-        
-        datos.velocidad = data[0].velocidad
-        
-    } catch (err) {
-        console.log(err);
-    }
-    console.log("*************************")
-    console.log(datos.velocidad)
-    console.log("*************************")
-	return (datos.velocidad);
-}
-
-async function dataRitmo(){ //Velocidad
-	let datos = {
+        fuerza: 0,
+        velocidad: 0,
         ritmo: 0,
         tiempo: 0
     };
     try {
         const [data, field] = await (await db2.then()).execute(
+            `SELECT IdEntreno, Fuerza FROM datos WHERE IdUsuario = "${userIdOnline}" AND Fuerza>0 ORDER BY IdEntreno DESC LIMIT 1;`
+            
+        );
+        datos.fuerza = (data[0].Fuerza/(9.81)).toFixed(4)
+        const [rows, fields] = await (await db2.then()).execute(
+            `SELECT IdEntreno, velocidad FROM datos WHERE IdUsuario = "${userIdOnline}" AND velocidad>0 ORDER BY IdEntreno DESC LIMIT 1;`
+        );
+        datos.velocidad = rows[0].velocidad
+        const [dataRow, fieldss] = await (await db2.then()).execute(
             `SELECT IdEntreno, ritmo, tiempo FROM datos WHERE IdUsuario = "${userIdOnline}"  AND ritmo>0 ORDER BY IdEntreno DESC LIMIT 1;`
         );
-        datos.ritmo = data[0].ritmo
-        datos.tiempo = data[0].tiempo
+        datos.ritmo = dataRow[0].ritmo
+        datos.tiempo = dataRow[0].tiempo
         
     } catch (err) {
         console.log(err);
     }
-    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    console.log("########FUERZA#########") 
+    console.log((datos.fuerza/(9.81)).toFixed(4))
+    console.log("********VELOCIDAD**********")
+    console.log(datos.velocidad)
+    console.log("^^^^^^^^^RITMO^^^^^^^^^")
     console.log(datos.ritmo)
+    console.log("!!!!!!!!TIEMPO!!!!!!!!!!")
     console.log(datos.tiempo)
-    console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 	return (datos);
 }
 
 //Conexion cliente-Servidor
-/*io.on('connection', async  function(socket) {
-	console.log("conectadoFuerza!");
-    socket.emit('fuerza', await dataFuerza(userIdOnline));
+io.on('connection', async  function(socket) {
+	console.log("conectadoDatos!");
+    socket.emit('datos', await dataFuerza());
 });
 
-io.on("connection", async function(socket) {
+/*io.on("connection", async function(socket) {
     console.log("conectadoVelocidad!");
     socket.emit("velocidad", await dataVelocidad());
-});*/
+});
 
 io.on("connection", async function(socket) {
     console.log("conectadoRitmo!"); 
     socket.emit("ritmo", await dataRitmo());
-});
+});*/
 
 
 /*io.on("connection", (socket) => {
