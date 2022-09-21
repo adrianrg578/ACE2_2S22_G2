@@ -1,8 +1,10 @@
 import React, { Component, useState } from "react"
+import DatePicker from "react-datepicker";
 import 'react-dates/initialize';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { DateRangePicker } from 'react-dates';
 import 'react-dates/lib/css/_datepicker.css';
+import "react-datepicker/dist/react-datepicker.css";
 
 class FechaP extends Component {
 
@@ -25,7 +27,8 @@ class FechaP extends Component {
         onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
         focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
         onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
-/>
+        enableOutsideDays={true}
+/>  
 </div>
     }
 }
