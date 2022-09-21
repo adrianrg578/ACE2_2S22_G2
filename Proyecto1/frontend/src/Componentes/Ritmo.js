@@ -5,10 +5,11 @@ import socket from "../Socket/Socket";
 
 export default function Ritmo() {
   //Hooks
-  const [frecuencia, setFrecuencia] = useState({
-    frecuencia: ""
+  const [frecuencia, setFrecuencia] = useState({ 
+    frecuencia: 0 
   });
   const [ritmo, setRitmo] = useState("");
+  const [tiempo, setTiempo] = useState("");
 
   //Estilos
   const InputStyle = {
@@ -25,34 +26,26 @@ export default function Ritmo() {
   const handleInputChange = (e) => {
     setFrecuencia({
       ...frecuencia,
-      [e.target.name]: e.target.value
-    })
-    console.log(frecuencia)
+      [e.target.name] : e.target.value
+  })
   };
+
 
   useEffect(() => {
-    socket.on("ritmo", (arg) => {
-      setRitmo(...ritmo, arg);
+    socket.on("ritmo", (datos) => {
+      setRitmo(datos.ritmo);
+      setTiempo(datos.tiempo);
+      /*callback({
+        IdUser: "dataUsuario.IdUser"
+      });*/
     });
-  })
+  }, [ritmo, tiempo])
 
-  /*const gageCalc = bmi => {
-    var result = ritmo;
-    if (bmi >= 16 && bmi <= 18.5) {
-      result = getPercentage(bmi, 16, 18.5, 0);
-    } else if (bmi > 18.5 && bmi < 25) {
-      result = getPercentage(bmi, 18.5, 25, 0.33);
-    } else if (bmi >= 25 && bmi <= 30) {
-      result = getPercentage(bmi, 25, 30, 0.66);
-    }
-    return result;
-  };
+  const sendDashboard = async () => {
+    console.log(frecuencia.frecuencia)
+    console.log(tiempo)
+  }
 
-  function getPercentage(bmi, lowerBound, upperBound, segmentAdjustment) {
-    return (
-      (bmi - lowerBound) / (upperBound - lowerBound) / 3 + segmentAdjustment
-    );
-  }*/
 
   return (
     <div className="container">
@@ -68,17 +61,17 @@ export default function Ritmo() {
                     className="form-control-lg"
                     placeholder="Frecuencia 0.5 a 1.5 seg"
                     name="frecuencia"
-                    onChange={handleInputChange}/>
+                    onChange={handleInputChange} />
                 </div>
                 <div className="col-sm-2 mx-auto">
-                  <button style={InputStyle} type="button" class="btn outline-dark">Empezar Ritmo</button>
+                  <button style={InputStyle} onClick={()=>sendDashboard()} type="button" class="btn outline-dark">Empezar Ritmo</button>
                 </div>
               </div>
 
               <div className="mb-5 row rounded" style={BoxStyle}>
                 <div className="col-sm-15 mx-auto">
                   <GaugeChart
-                    percent={ritmo}
+                    percent={((tiempo*100/(frecuencia.frecuencia))/100)}
                     nrOfLevels={3}
                     colors={["#566573", "#2C3E50", "#566573"]}
                   />
