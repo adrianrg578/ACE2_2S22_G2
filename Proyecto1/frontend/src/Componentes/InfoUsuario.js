@@ -1,10 +1,13 @@
-import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/css/bootstrap.min.css";
 import React, {useState} from 'react';
 import socket from "../Socket/Socket";
+import { Field } from "formik"
+import FechaP from "./FechaP";
 
 //Componentes
 
 export default function InfoUsuario() {
+
 
     //Hooks
     //const [edad, setEdad] = useState('');
@@ -13,6 +16,8 @@ export default function InfoUsuario() {
     //const [estatura, setEstatura] = useState('');
 
     const usuario = JSON.parse(localStorage.getItem('Usuario'))
+
+    
   
     //Estilos
     const BoxStyle = {
@@ -48,11 +53,13 @@ export default function InfoUsuario() {
                 <dt>Peso: </dt><dd>{usuario.Peso} lb</dd>
                 <dt>Genero: </dt><dd>{usuario.Genero} </dd>
                 <dt>Estatura: </dt><dd>{usuario.Estatura} m</dd>
-            </dl>
-            <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}></p>
+            </dl>            
           </div>
         </div>
-        
+        <div>
+       
+        </div>
+        <FechaP />
       </div>
     );
   }
