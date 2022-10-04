@@ -6,6 +6,9 @@ const {Server} =  require("socket.io")
 const cors = require ("cors");
 app.use(cors());
 
+var coon = require('./db');
+const db2 = require('./db2');
+
 const server = {createServer}.createServer(app);
 const io = new Server(server,{
     cors:{
@@ -35,6 +38,12 @@ parser.on('data',function(data){
     }
 
 });
+
+mySerial.on('data', function (data){
+    io.emit('datos_de_arduino',data_arduino);
+})
+
+
 
 server.listen(4001,()=>{console.log('servidor en el puerto ',4001);
 });
