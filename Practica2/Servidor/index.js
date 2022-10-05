@@ -87,6 +87,7 @@ app.get("/users", function (req, res) {
     )
 })
 
+//Solicitud de los datos a la base de datos
 app.post("/datos_recolectados", function (req, res){
     console.log (req.body.idUsuario);
     coon.query(     
@@ -107,6 +108,27 @@ app.post("/datos_recolectados", function (req, res){
         }
     )
 })
+
+//Registrar un nuevo usuario
+io.on("connection", (socket)=>{
+    socket.on("registro", (arg, callback)=>{
+        var query = coon.query(
+            `INSERT INTO Usuario (username, pass, nombre, apellido, edad, peso, genero, estatura) VALUES ("${arg.username}","${arg.contra}","${arg.nombre}","${arg.apellido}" ,${parseInt(arg.edad)}, ${parseInt(arg.peso)},"${arg.genero}",${arg.estatura});`,
+            function (err, result){
+                if(err){
+                    callback(
+                        {message: "Error, no se pudo ingresar usuario ='( "
+                    });
+                }else{
+                    console.log("Usuario: ", arg.nombre, " Registrado con exito!! XD")
+                    callback({
+                        message: "Usuario: " + arg.nombre + " Registrado con exito!! XD"
+                    });
+                }
+            }
+        )
+    });
+});
 
 
 server.listen(4001,()=>{console.log('servidor en el puerto ',4001);
