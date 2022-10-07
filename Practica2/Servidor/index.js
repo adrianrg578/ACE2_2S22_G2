@@ -1,25 +1,31 @@
 
 const express = require('express');
+const cors = require ("cors");
+const db2 = require('./db2');
+var coon = require('./db');
 const app = express();
+
+// middlewares
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
+
+//Conexion socket
 const {createServer} = require("http");
 const {Server} =  require("socket.io")
-const cors = require ("cors");
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-var coon = require('./db');
-const db2 = require('./db2');
-
-const server = {createServer}.createServer(app);
-const io = new Server(server,{
-    cors:{
+//Configuracion de cors con Socket.io
+const server = { createServer }.createServer(app);
+const io = require("socket.io")(server, {
+    cors: {
         origin: "http://localhost:3000",
-        methods: ["GET","POST"],
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
     }
 });
 
-const port = process.env.PORT||4001;
+/*const port = process.env.PORT||4001;
 
 const {SerialPort} = require('serialport');
 const {ReadlineParser}=require('@serialport/parser-readline');
@@ -49,7 +55,7 @@ parser.on('data',function(data){
 
 mySerial.on('data', function (data){
     io.emit('datos_de_arduino',data_arduino);
-})
+})*/
 
 //Inicio de Sesion
 io.on("connection", (socket)=> {
@@ -110,26 +116,54 @@ app.post("/datos_recolectados", function (req, res){
 })
 
 //Registrar un nuevo usuario
-io.on("connection", (socket)=>{
-    socket.on("registro", (arg, callback)=>{
-        var query = coon.query(
-            `INSERT INTO Usuario (username, pass, nombre, apellido, edad, peso, genero, estatura) VALUES ("${arg.username}","${arg.contra}","${arg.nombre}","${arg.apellido}" ,${parseInt(arg.edad)}, ${parseInt(arg.peso)},"${arg.genero}",${arg.estatura});`,
-            function (err, result){
-                if(err){
-                    callback(
-                        {message: "Error, no se pudo ingresar usuario ='( "
-                    });
-                }else{
-                    console.log("Usuario: ", arg.nombre, " Registrado con exito!! XD")
-                    callback({
-                        message: "Usuario: " + arg.nombre + " Registrado con exito!! XD"
-                    });
+app.post('/register', function (req, res) {
+    console.log(req.body)
+    var query = coon.query(
+        `INSERT INTO Usuario (username, pass, nombre, apellido, edad, peso, genero, estatura) VALUES 
+        ("${req.body.Username}", "${req.body.Contrasena}", "${req.body.Nombre}", "${req.body.Apellido}",
+        ${parseInt(req.body.Edad)}, ${parseInt(req.body.Peso)}, "${req.body.Genero}", ${req.body.Estatura});`,
+        function (err, result) {
+            if (err) {
+                throw err
+            }
+            else {
+                respuesta = "Usuario: ", req.body.Username, " Registrado Correctamente"
+                res.send(respuesta)
+                console.log(respuesta)
+            }
+        }
+    )
+})
+
+//Inicio de sesion
+app.post("/login", function (req, res) {
+    var query = coon.query(
+        `SELECT idUsuario, username, nombre, apellido, edad, peso, estatura, genero FROM Usuario WHERE ((username = '${req.body.Username}') AND (pass = '${req.body.Contrasena}'))`,
+        function (err, result) {
+            if (err) {
+                throw err
+            }
+            else {
+                res.send(result)
+                datosAlmc = result
+                if (result.length == 0) {
+                    console.log("Usuario o Contraseña Invalidos")
+                } else {
+                    //para usarlos como globaales adelante 
+                    console.log("Usuario ingresado")
+                    userIdOnline = req.body.textUsuario
+                    nameIdOnline = datosAlmc[0].Nombre
+                    edadOnline = datosAlmc[0].Edad
+                    pesoOnline = datosAlmc[0].peso
+                    generoOnline = datosAlmc[0].Genero
+                    estaturaOnline = datosAlmc[0].Estatura
                 }
             }
-        )
-    });
-});
+        }
+    )
+})
 
-
-server.listen(4001,()=>{console.log('servidor en el puerto ',4001);
+server.listen(
+    4001,
+    ()=>{console.log('servidor en el puerto ',4001);
 });

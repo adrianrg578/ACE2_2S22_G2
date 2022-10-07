@@ -5,16 +5,17 @@ import React, {useState} from 'react';
 
 export default function RegistroForm() {
     //Rutas
-    let urlRegister = "estaseraunaruta"
+    let urlRegister = "http://localhost:4001/register"
     //Variables
     const navigate = useNavigate()
     let api = helpHttp();
 
     //Hooks
     const [dataUsuario, setDataUsuario] = useState({
-        IdUser: "",
-        Contra: "",
+        Username: "",
+        Contrasena: "",
         Nombre: "",
+        Apellido: "Perez",
         Edad: "",
         Peso: "",
         Genero: "",
@@ -37,16 +38,16 @@ export default function RegistroForm() {
         console.log(dataUsuario)
     };
 
-    const sendLogin = async () => {   
-        navigate('/');     
-        /*api.post(urlRegister, {body:dataUsuario}).then((res) => {
+    const sendLogin = async () => {      
+        api.post(urlRegister, {body:dataUsuario}).then((res) => {
+            console.log(res)
             if(!res.err){
                 alert("Se agregó el usuario")
                 navigate('/');
             }else{
                 console.log("ERROR")
             }
-          })*/
+          })
     }
     return (
         <div className="container">
@@ -61,7 +62,7 @@ export default function RegistroForm() {
                         <input 
                             style={InputStyle} type="text" 
                             className="form-control" 
-                            name="IdUser" 
+                            name="Username" 
                             placeholder="Username" 
                             onChange={handleInputChange}/>
                     </div>
@@ -105,8 +106,8 @@ export default function RegistroForm() {
                             style={InputStyle}
                             name="Genero" 
                             onChange={handleInputChange}>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
                         </select>
                     </div>
                 </div>
@@ -117,7 +118,7 @@ export default function RegistroForm() {
                             type="text" 
                             className="form-control" 
                             name="Estatura" 
-                            placeholder="Estatura(m)" 
+                            placeholder="Estatura(cm)" 
                             onChange={handleInputChange}/>
                     </div>
                 </div>
@@ -127,7 +128,7 @@ export default function RegistroForm() {
                             style={InputStyle} 
                             type="password" 
                             className="form-control" 
-                            name="Contra" 
+                            name="Contrasena" 
                             placeholder="Contraseña" 
                             onChange={handleInputChange}/>
                     </div>
