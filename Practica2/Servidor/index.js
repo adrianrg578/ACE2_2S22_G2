@@ -64,26 +64,19 @@ mySerial.on('data', function (data){
 //Peticiones al db
 async function dataEntrenamiento(){ 
 	let datos = {
-        repeticiones: 0,
-        rango: 0,
-        calorias: 0,
-        bpm: 0
+        repeticion: 4,
+        rango: 5,
+        calorias: 6,
+        bpm: 08
     };
-    try {
+    /*try {
         const [data, field] = await (await db2.then()).execute(
-            `SELECT IdEntreno, Fuerza FROM datos WHERE IdUsuario = "${userIdOnline}" AND Fuerza>0 ORDER BY IdEntreno DESC LIMIT 1;`
+            `SELECT IdDato, fecha, bpm, oxigeno, distancia, repeticion FROM Datos WHERE IdUsuario = "${userIdOnline}";`
             
         );
-        datos.fuerza = (data[0].Fuerza/(9.81)).toFixed(4)
-        const [rows, fields] = await (await db2.then()).execute(
-            `SELECT IdEntreno, velocidad FROM datos WHERE IdUsuario = "${userIdOnline}" AND velocidad>0 ORDER BY IdEntreno DESC LIMIT 1;`
-        );
-        datos.velocidad = rows[0].velocidad
-        const [dataRow, fieldss] = await (await db2.then()).execute(
-            `SELECT IdEntreno, ritmo, tiempo FROM datos WHERE IdUsuario = "${userIdOnline}"  AND ritmo>0 ORDER BY IdEntreno DESC LIMIT 1;`
-        );
-        datos.ritmo = dataRow[0].ritmo
-        datos.tiempo = dataRow[0].tiempo
+        datos.repeticion = (data[0].repeticion)
+        datos.bpm = (data[0].bpm)
+        datos.bpm = (data[0].bpm)
         
     } catch (err) {
         console.log(err);
@@ -95,19 +88,16 @@ async function dataEntrenamiento(){
     console.log("^^^^^^^^^RITMO^^^^^^^^^")
     console.log(datos.ritmo)
     console.log("!!!!!!!!TIEMPO!!!!!!!!!!")
-    console.log(datos.tiempo)
+    console.log(datos.tiempo)*/
 	return (datos);
 }
 
-app.get("/users", function (req, res) {
-    var query = coon.query(
-        "SELECT * FROM Usuario;",
-        function (err, result) {
-            if (err) throw err
-            else res.send(result)
-        }
-    )
-})
+//Conexion cliente-Servidor
+io.on('connection', async  function(socket) {
+	console.log("conectadoDatos!");
+    socket.emit('datos', await dataEntrenamiento());
+});
+
 
 //Solicitud de los datos a la base de datos
 app.post("/datos_recolectados", function (req, res){
@@ -130,6 +120,17 @@ app.post("/datos_recolectados", function (req, res){
         }
     )
 })
+
+app.get("/users", function (req, res) {
+    var query = coon.query(
+        "SELECT * FROM Usuario;",
+        function (err, result) {
+            if (err) throw err
+            else res.send(result)
+        }
+    )
+})
+
 
 //Registrar un nuevo usuario
 app.post('/register', function (req, res) {

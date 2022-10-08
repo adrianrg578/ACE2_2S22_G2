@@ -19,7 +19,10 @@ export default function Entreno() {
 
 
     //Hooks
-    const [fuerza, setFuerza] = useState("");
+    const [repeticion, setRepeticion] = useState("");
+    const [rango, setRango] = useState("");
+    const [calorias, setCalorias] = useState("");
+    const [BPM, setBPM] = useState("");
 
     //Estilos
     const BoxStyle = {
@@ -58,16 +61,18 @@ export default function Entreno() {
     }
 
     //Conexion
-    /*useEffect(() => {
-        socket.on("fuerza", (Fuerza, callback) => {
-            console.log(fuerza, "No se solo estoy probando FUERZA")
-            setFuerza(Fuerza);
+    useEffect(() => {
+        socket.on("datos", (data, callback) => {
+            setRepeticion(data.repeticion);
+            setRango(data.rango);
+            setCalorias(data.calorias);
+            setBPM(data.bpm);
             callback({
                 IdUser: dataUsuario.IdUser
             });
         });
 
-    }, [fuerza]);*/
+    }, [repeticion, rango, calorias, BPM]);
 
     return (
         <div className="container text-center" style={BoxStyle}>
@@ -77,7 +82,7 @@ export default function Entreno() {
                         <Card className="text-white" style={StyleCard}>
                             <Card.Header>NUMERO DE REPETICIONES</Card.Header>
                             <Card.Body>
-                                <Card.Title>0 REP</Card.Title>
+                                <Card.Title>{repeticion} REP</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -85,7 +90,7 @@ export default function Entreno() {
                         <Card className="text-white" style={StyleCard}>
                             <Card.Header>RANGO DE MOVIMIENTO DE LA ULTIMA REPETICION</Card.Header>
                             <Card.Body>
-                                <Card.Title>0-6 </Card.Title>
+                                <Card.Title>{rango} </Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -95,7 +100,7 @@ export default function Entreno() {
                         <Card className="text-white" style={StyleCard}>
                             <Card.Header>CANTIDAD DE CALORIAS QUEMADAS</Card.Header>
                             <Card.Body>
-                                <Card.Title>0 CAL</Card.Title>
+                                <Card.Title>{calorias} CAL</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -103,7 +108,7 @@ export default function Entreno() {
                         <Card className="text-white bold" style={StyleCard}>
                             <Card.Header>FRECUENCIA CARDIACA</Card.Header>
                             <Card.Body>
-                                <Card.Title>0 BPM</Card.Title>
+                                <Card.Title>{BPM} BPM</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>
