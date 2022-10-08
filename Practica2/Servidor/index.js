@@ -28,7 +28,7 @@ const io = require("socket.io")(server, {
 //Datos globales
 var today = new Date();
 let datosAlmc = {};
-let userIdOnline;
+let userIdOnline = 1;
 let start = 0;
 let time = 0;
 
@@ -106,6 +106,61 @@ async function dataEntrenamiento(){
 	return (datos);
 }
 
+async function obtenerFrecuencia(){
+    let datos = {};
+    try {
+        const [data] = await (await db2.then()).execute(
+            `SELECT bpm FROM Datos as D
+            WHERE D.idUsuario = "${userIdOnline}";`
+            
+        );
+        //console.log(data) 
+        datos = JSON.stringify(data)      
+    } catch (err) {
+        console.log(err);
+    }
+	return (datos);
+}
+
+async function obtenerRango(){
+    let datos = {};
+    try {
+        const [data] = await (await db2.then()).execute(
+            `SELECT distancia FROM Datos as D
+            WHERE D.idUsuario = "${userIdOnline}";`
+            
+        );
+        //console.log(data) 
+        datos = JSON.stringify(data)      
+    } catch (err) {
+        console.log(err);
+    }
+	return (datos);
+}
+
+async function obtenerCalorias(){
+    let datos = {};
+    try {
+        const [data] = await (await db2.then()).execute(
+            `SELECT peso FROM Datos as D
+            INNER JOIN Usuario U ON U.idUsuario = D.idUsuario
+            WHERE D.idUsuario = "${userIdOnline}"`
+            
+        );
+        let temp = [];
+        datos.calorias = [];
+        data.forEach(function(currentValue, index) {
+            datos.calorias.push({calorias: (0.049*(currentValue.peso/2.205)*2.2*time).toFixed(2)});
+
+        }       
+        );        
+        
+    } catch (err) {
+        console.log(err);
+    }
+	return (JSON.stringify(datos.calorias));
+}
+
 //Conexion cliente-Servidor
 io.on('connection', async  function(socket) {
 	console.log("conectadoDatos!");
@@ -116,6 +171,9 @@ io.on('connection', async  function(socket) {
     }
     console.log("Stados ", start, " Tiempo ", time)
     socket.emit('datos', await dataEntrenamiento());
+    socket.emit('calorias', await obtenerCalorias());
+    socket.emit('frecuencia', await obtenerFrecuencia());
+    socket.emit('rango', await obtenerRango());
 });
 
 //Cambio de estado
