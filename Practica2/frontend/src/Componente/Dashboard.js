@@ -19,7 +19,7 @@ export default function Dashboard() {
     };
 
     const BoxStyle = {
-        height: '80vh',
+        height: '50rem',
         background: "rgba(5,.5,0.5,.3)"
     };
 

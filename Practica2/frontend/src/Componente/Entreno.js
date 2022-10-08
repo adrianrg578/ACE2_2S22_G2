@@ -3,6 +3,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { helpHttp } from "../Helper/helpHttp";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -10,18 +11,22 @@ import Col from 'react-bootstrap/Col';
 import socket from "../Socket/Socket";
 
 
+
 //Componentes
 
 export default function Entreno() {
+    //Rutas
+    let urlState = "http://localhost:4001/start"
+
     //Variables
     const saved = localStorage.getItem("Usuario");
     const dataUsuario = JSON.parse(saved)
-
+    let api = helpHttp();
 
     //Hooks
     const [repeticion, setRepeticion] = useState("");
-    const [rango, setRango] = useState("");
     const [calorias, setCalorias] = useState("");
+    const [rango, setRango] = useState("");
     const [BPM, setBPM] = useState("");
 
     //Estilos
@@ -41,13 +46,14 @@ export default function Entreno() {
     };
 
     const BoxHeight = {
-        height: "31vh"
+        height: "11rem"
     };
 
     const StyleCard = {
         "backgroundColor": "rgba(5,.5,0.5,.3)",
         "border": "rgba(0, 0, 0, 0.5)",
-        "width": "18rem"
+        "width": "18rem",
+        "height": "25vh"
     };
 
     const InputStyle = {
@@ -56,8 +62,24 @@ export default function Entreno() {
         "color": "white"
     };
 
-    const sendDashboard = async () => {
-        console.log("HOLA SOY FUERZA")
+    const sendStart = async () => {
+        api.post(urlState, { body: { state: 1 } }).then((response) => {
+            if (!response.err) {
+                console.log("Inicio del entreno")
+            } else {
+                console.log("ERROR")
+            }
+        })
+    }
+
+    const sendEnd = async () => {
+        api.post(urlState, { body: { state: 0 } }).then((response) => {
+            if (!response.err) {
+                console.log("Finalizo del entreno")
+            } else {
+                console.log("ERROR")
+            }
+        })
     }
 
     //Conexion
@@ -116,8 +138,8 @@ export default function Entreno() {
                 <Row>
                     <Col>
                         <ButtonGroup aria-label="Basic example">
-                            <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendDashboard()}*/>Iniciar Entreno</Button>
-                            <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendRegistro()}*/>Finalizar Entreno</Button>
+                            <Button className="btn outline-dark" style={InputStyle} onClick={() => sendStart()}>Iniciar Entreno</Button>
+                            <Button className="btn outline-dark" style={InputStyle} onClick={() => sendEnd()}>Finalizar Entreno</Button>
                         </ButtonGroup>
                     </Col>
                 </Row>

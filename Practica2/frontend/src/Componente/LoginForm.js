@@ -41,12 +41,12 @@ export default function LoginForm() {
         api.post(urlLogin, {body:dataUsuario}).then((response) => {
           if(!response.err){
                 localStorage.setItem("Usuario", JSON.stringify({
-                IdUser:response[0].IdUser,
-                Nombre: response[0].Nombre,
-                Edad: response[0].Edad,
+                IdUser:response[0].usename,
+                Nombre: response[0].nombre,
+                Edad: response[0].edad,
                 Peso: response[0].peso,
-                Genero: response[0].Genero,
-                Estatura: response[0].Estatura}
+                Genero: response[0].genero,
+                Estatura: response[0].estatura}
                 ))
               alert("Se inicio sesion")
               navigate('/dashboard');

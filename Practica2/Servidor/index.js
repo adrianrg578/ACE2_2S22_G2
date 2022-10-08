@@ -28,6 +28,8 @@ const io = require("socket.io")(server, {
 //Datos globales
 let datosAlmc = {};
 let userIdOnline;
+let start = 0;
+let time = 0;
 
 /*const port = process.env.PORT||4001;
 
@@ -71,7 +73,10 @@ async function dataEntrenamiento(){
     };
     /*try {
         const [data, field] = await (await db2.then()).execute(
-            `SELECT IdDato, fecha, bpm, oxigeno, distancia, repeticion FROM Datos WHERE IdUsuario = "${userIdOnline}";`
+            `SELECT IdDato, fecha, bpm, oxigeno, distancia, repeticion, peso FROM Datos as D
+            INNER JOIN Usuario U ON U.idUsuario = D.idUsuario
+            WHERE D.idUsuario = "${userIdOnline}"
+            ORDER BY IdDato DESC LIMIT ;`
             
         );
         datos.repeticion = (data[0].repeticion)
@@ -95,9 +100,19 @@ async function dataEntrenamiento(){
 //Conexion cliente-Servidor
 io.on('connection', async  function(socket) {
 	console.log("conectadoDatos!");
+    if (start === 1){
+        time += (1/60);
+    }else{
+        time = 0;
+    }
+    console.log("Stados ", start, " Tiempo ", time)
     socket.emit('datos', await dataEntrenamiento());
 });
 
+//Cambio de estado
+app.post("/start", function (req, res) {
+    start = req.body.state
+})
 
 //Solicitud de los datos a la base de datos
 app.post("/datos_recolectados", function (req, res){
@@ -130,7 +145,6 @@ app.get("/users", function (req, res) {
         }
     )
 })
-
 
 //Registrar un nuevo usuario
 app.post('/register', function (req, res) {
