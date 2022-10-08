@@ -25,6 +25,10 @@ const io = require("socket.io")(server, {
     }
 });
 
+//Datos globales
+let datosAlmc = {};
+let userIdOnline;
+
 /*const port = process.env.PORT||4001;
 
 const {SerialPort} = require('serialport');
@@ -44,7 +48,7 @@ parser.on('data',function(data){
         data_arduino = {BPM: datos[0], spo2: datos[1], distancia: datos[2], repeticiones: datos[3]};
         console.log(data_arduino);
         var query = coon.query(
-            `INSERT INTO Datos (idUsuario, fecha, bpm, oxigeno, distancia, repeticion) VALUES (1, '2022-10-04', ${datos[0]},${datos[1]},${datos[2]},${datos[3]});`,
+            `INSERT INTO Datos (idUsuario, fecha, bpm, oxigeno, distancia, repeticion) VALUES (userIdOnline, '2022-10-04', ${datos[0]},${datos[1]},${datos[2]},${datos[3]});`,
             function(err){
                 if(err){throw err}
             }    
@@ -57,31 +61,43 @@ mySerial.on('data', function (data){
     io.emit('datos_de_arduino',data_arduino);
 })*/
 
-//Inicio de Sesion
-io.on("connection", (socket)=> {
-    socket.on("login",(arg, callback)=>{
-        var query = coon.query(
-            `SELECT idUsuario, username, nombre, apellido, edad, peso, estatura, genero FROM Usuario WHERE ((username = '${arg.username}') AND (pass = '${arg.Contra}'))`,
-            function (err, result){
-                if (err){
-                    throw err
-                }else{
-                    console.log(result)
-                    if(result.length == 0){
-                        console.log("usuario o contraseña invalidos")
-
-                        callback({
-                            message: "usuario o contraseña invalidos"
-                        });
-
-                        console.log("Usuario ingresado");
-
-                    }
-                }
-            }
-        )
-    })
-})
+//Peticiones al db
+async function dataEntrenamiento(){ 
+	let datos = {
+        repeticiones: 0,
+        rango: 0,
+        calorias: 0,
+        bpm: 0
+    };
+    try {
+        const [data, field] = await (await db2.then()).execute(
+            `SELECT IdEntreno, Fuerza FROM datos WHERE IdUsuario = "${userIdOnline}" AND Fuerza>0 ORDER BY IdEntreno DESC LIMIT 1;`
+            
+        );
+        datos.fuerza = (data[0].Fuerza/(9.81)).toFixed(4)
+        const [rows, fields] = await (await db2.then()).execute(
+            `SELECT IdEntreno, velocidad FROM datos WHERE IdUsuario = "${userIdOnline}" AND velocidad>0 ORDER BY IdEntreno DESC LIMIT 1;`
+        );
+        datos.velocidad = rows[0].velocidad
+        const [dataRow, fieldss] = await (await db2.then()).execute(
+            `SELECT IdEntreno, ritmo, tiempo FROM datos WHERE IdUsuario = "${userIdOnline}"  AND ritmo>0 ORDER BY IdEntreno DESC LIMIT 1;`
+        );
+        datos.ritmo = dataRow[0].ritmo
+        datos.tiempo = dataRow[0].tiempo
+        
+    } catch (err) {
+        console.log(err);
+    }
+    console.log("########FUERZA#########") 
+    console.log((datos.fuerza/(9.81)).toFixed(4))
+    console.log("********VELOCIDAD**********")
+    console.log(datos.velocidad)
+    console.log("^^^^^^^^^RITMO^^^^^^^^^")
+    console.log(datos.ritmo)
+    console.log("!!!!!!!!TIEMPO!!!!!!!!!!")
+    console.log(datos.tiempo)
+	return (datos);
+}
 
 app.get("/users", function (req, res) {
     var query = coon.query(
@@ -150,13 +166,9 @@ app.post("/login", function (req, res) {
                     console.log("Usuario o Contraseña Invalidos")
                 } else {
                     //para usarlos como globaales adelante 
-                    console.log("Usuario ingresado")
-                    userIdOnline = req.body.textUsuario
-                    nameIdOnline = datosAlmc[0].Nombre
-                    edadOnline = datosAlmc[0].Edad
-                    pesoOnline = datosAlmc[0].peso
-                    generoOnline = datosAlmc[0].Genero
-                    estaturaOnline = datosAlmc[0].Estatura
+                    console.log("El usuario inicio sesion correctamente")
+                    userIdOnline = datosAlmc[0].idUsuario
+                    console.log(userIdOnline)
                 }
             }
         }

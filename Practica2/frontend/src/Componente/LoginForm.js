@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 
 export default function LoginForm() {
     //Rutas
-    let urlLogin = "estaseraunaruta"
+    let urlLogin = "http://localhost:4001/login"
 
     //Variables
     const navigate = useNavigate()
@@ -15,8 +15,8 @@ export default function LoginForm() {
 
     //Hooks
     const [dataUsuario, setDataUsuario] = useState({
-        Contra: "",
-        IdUser: "",
+        Contrasena: "",
+        Username: "",
     });
 
     //Estilos
@@ -37,23 +37,23 @@ export default function LoginForm() {
 
 
     const sendDashboard = async () => {
-        navigate('/dashboard');
-        /*api.post(urlLogin, {body:dataUsuario}).then((response) => {
+        //navigate('/dashboard');
+        api.post(urlLogin, {body:dataUsuario}).then((response) => {
           if(!response.err){
-              localStorage.setItem("Usuario", JSON.stringify({
-                IdUser:response.data[0].IdUser,
-                Nombre: response.data[0].Nombre,
-                Edad: response.data[0].Edad,
-                Peso: response.data[0].peso,
-                Genero: response.data[0].Genero,
-                Estatura: response.data[0].Estatura,
-            }))
+                localStorage.setItem("Usuario", JSON.stringify({
+                IdUser:response[0].IdUser,
+                Nombre: response[0].Nombre,
+                Edad: response[0].Edad,
+                Peso: response[0].peso,
+                Genero: response[0].Genero,
+                Estatura: response[0].Estatura}
+                ))
               alert("Se inicio sesion")
               navigate('/dashboard');
           }else{
               console.log("ERROR")
           }
-        })*/
+        })
     }
     const sendRegistro = async () => {
         navigate('/registro');
@@ -73,7 +73,7 @@ export default function LoginForm() {
                                 style={InputStyle}
                                 type="text"
                                 className="form-control"
-                                name="IdUser"
+                                name="Username"
                                 placeholder="Username"
                                 onChange={handleInputChange} />
                         </div>
@@ -84,13 +84,13 @@ export default function LoginForm() {
                                 style={InputStyle}
                                 type="password"
                                 className="form-control"
-                                name="Contra"
+                                name="Contrasena"
                                 placeholder="Contraseña"
                                 onChange={handleInputChange} />
                         </div>
                     </div>
                     <div className="col-3 mx-auto">
-                        <ButtonGroup aria-label="Basic example">
+                        <ButtonGroup className="d-flex justify-content-center align-items-center" aria-label="Basic example">
                             <Button className="btn outline-dark" style={InputStyle} onClick={() => sendDashboard()}>Ingresar</Button>
                             <Button className="btn outline-dark" style={InputStyle} onClick={() => sendRegistro()}>Registrar</Button>
                         </ButtonGroup>

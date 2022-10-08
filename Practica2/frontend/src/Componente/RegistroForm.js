@@ -133,8 +133,12 @@ export default function RegistroForm() {
                             onChange={handleInputChange}/>
                     </div>
                 </div>
-                <div className="col-3 mx-auto">
-                    <button style={InputStyle} type="button" onClick={() => sendLogin()} class="btn outline-dark">Registrar datos</button>
+                <div className="col-3 mx-auto d-flex justify-content-center align-items-center">
+                    <button 
+                        style={InputStyle} 
+                        type="button" 
+                        onClick={() => sendLogin()} 
+                        className="btn outline-dark">Registrar datos</button>
                 </div>
             </form>
         </div>

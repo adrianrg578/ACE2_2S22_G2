@@ -43,7 +43,8 @@ export default function Entreno() {
 
     const StyleCard = {
         "backgroundColor": "rgba(5,.5,0.5,.3)",
-        "border": "rgba(0, 0, 0, 0.5)"
+        "border": "rgba(0, 0, 0, 0.5)",
+        "width": "18rem"
     };
 
     const InputStyle = {
@@ -51,14 +52,13 @@ export default function Entreno() {
         "border": "none",
         "color": "white"
     };
-    //style={{ width: '18rem' }}
 
     const sendDashboard = async () => {
         console.log("HOLA SOY FUERZA")
     }
 
     //Conexion
-    useEffect(() => {
+    /*useEffect(() => {
         socket.on("fuerza", (Fuerza, callback) => {
             console.log(fuerza, "No se solo estoy probando FUERZA")
             setFuerza(Fuerza);
@@ -67,7 +67,7 @@ export default function Entreno() {
             });
         });
 
-    }, [fuerza]);
+    }, [fuerza]);*/
 
     return (
         <div className="container text-center" style={BoxStyle}>
@@ -78,10 +78,6 @@ export default function Entreno() {
                             <Card.Header>NUMERO DE REPETICIONES</Card.Header>
                             <Card.Body>
                                 <Card.Title>0 REP</Card.Title>
-                                <Card.Text>
-                                    Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.
-                                </Card.Text>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -90,10 +86,6 @@ export default function Entreno() {
                             <Card.Header>RANGO DE MOVIMIENTO DE LA ULTIMA REPETICION</Card.Header>
                             <Card.Body>
                                 <Card.Title>0-6 </Card.Title>
-                                <Card.Text>
-                                    Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.
-                                </Card.Text>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -104,10 +96,6 @@ export default function Entreno() {
                             <Card.Header>CANTIDAD DE CALORIAS QUEMADAS</Card.Header>
                             <Card.Body>
                                 <Card.Title>0 CAL</Card.Title>
-                                <Card.Text>
-                                    Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.
-                                </Card.Text>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -116,10 +104,6 @@ export default function Entreno() {
                             <Card.Header>FRECUENCIA CARDIACA</Card.Header>
                             <Card.Body>
                                 <Card.Title>0 BPM</Card.Title>
-                                <Card.Text>
-                                    Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.
-                                </Card.Text>
                             </Card.Body>
                         </Card>
                     </Col>
