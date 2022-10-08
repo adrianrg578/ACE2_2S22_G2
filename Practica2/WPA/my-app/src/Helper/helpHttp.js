@@ -10,26 +10,26 @@ export const helpHttp = () => {
 
         options.method = options.method || "GET";
         options.headers = options.headers
-            ?{...defaultHeader, ...options.headers}
-            :defaultHeader;
+            ? { ...defaultHeader, ...options.headers }
+            : defaultHeader;
 
         options.body = JSON.stringify(options.body) || false;
-        if(!options.body) delete options.body;
+        if (!options.body) delete options.body;
 
         console.log(options);
         setTimeout(() => controller.abort(), 3000);
 
         return fetch(endpoint, options)
-            .then((res) => 
+            .then((res) =>
                 res.ok
-                ?res.json()
-                :Promise.reject({
-                    err: true,
-                    status: res.status || '00',
-                    statusText: res.statusText || "Ocurrio un error"
-                })
+                    ? res.json()
+                    : Promise.reject({
+                        err: true,
+                        status: res.status || '00',
+                        statusText: res.statusText || "Ocurrio un error"
+                    })
             )
-            .catch((err) => err) 
+            .catch((err) => err)
     };
 
     const get = (url, options = {}) => customFetch(url, options);
