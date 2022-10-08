@@ -17,6 +17,7 @@ root.render(
     <Routes>
       <Route path="/" element={<Login/>} />
       <Route path="/registro" element={<Registro/>} />
+      <Route path="/dashboard" element={<Dashboard/>} />
     </Routes>
   </BrowserRouter>
 );

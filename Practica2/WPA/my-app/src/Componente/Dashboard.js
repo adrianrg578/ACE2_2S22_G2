@@ -30,7 +30,6 @@ export default function Dashboard() {
                 <div className="row rounded d-flex justify-content-center align-items-center" style={heightStyle} >
                     <div className="col-10 rounded mx-auto">
                         <h1 className="text-center text-white">Bienvenido {dataUsuario.Nombre}</h1>
-                        <h2 className="text-center text-white">Elija el tipo de entrenamiento</h2>
                     </div>
                     <div className="col-10 rounded mx-auto" style={BoxStyle}>
                         <MenuEntreno />

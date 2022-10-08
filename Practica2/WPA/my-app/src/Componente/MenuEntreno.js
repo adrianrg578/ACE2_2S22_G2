@@ -20,16 +20,16 @@ export default function MenuEntreno() {
     return (
         <div >
             <Tabs
-                defaultActiveKey="fuerza"
+                defaultActiveKey="entrenamiento"
                 id=""
                 className="mb-3 border-light rounded d-flex justify-content-center align-items-center"
                 justify
                 style={estilo}>
 
-                <Tab eventKey="fuerza" title="Fuerza">
+                <Tab eventKey="entrenamiento" title="Entrenamiento">
                     <Entreno/>
                 </Tab>
-                <Tab eventKey="Hola" title="Hola">
+                <Tab eventKey="perfil" title="Perfil">
 
                 </Tab>
             </Tabs>
