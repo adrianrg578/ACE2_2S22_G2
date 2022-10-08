@@ -26,6 +26,7 @@ const io = require("socket.io")(server, {
 });
 
 //Datos globales
+var today = new Date();
 let datosAlmc = {};
 let userIdOnline;
 let start = 0;
@@ -44,13 +45,16 @@ const parser = mySerial.pipe(new ReadlineParser({ delimiter:'\n'}))
 var data_arduino;
 
 parser.on('data',function(data){
+    const tiempoTranscurrido = Date.now();
+    const hoy = new Date(tiempoTranscurrido);
+    let dateNow = hoy.toLocaleDateString('en-us', { dateStyle: 'short'})
     let temp = data.toString();
     const datos = temp.split(",");
     if(datos[1]){
         data_arduino = {BPM: datos[0], spo2: datos[1], distancia: datos[2], repeticiones: datos[3]};
         console.log(data_arduino);
         var query = coon.query(
-            `INSERT INTO Datos (idUsuario, fecha, bpm, oxigeno, distancia, repeticion) VALUES (userIdOnline, '2022-10-04', ${datos[0]},${datos[1]},${datos[2]},${datos[3]});`,
+            `INSERT INTO Datos (idUsuario, fecha, bpm, oxigeno, distancia, repeticion) VALUES (userIdOnline, dateNow, ${datos[0]},${datos[1]},${datos[2]},${datos[3]});`,
             function(err){
                 if(err){throw err}
             }    
@@ -66,34 +70,39 @@ mySerial.on('data', function (data){
 //Peticiones al db
 async function dataEntrenamiento(){ 
 	let datos = {
-        repeticion: 4,
-        rango: 5,
-        calorias: 6,
-        bpm: 08
+        repeticion: 0,
+        calorias: 0,
+        tiempo: 0,
+        rango: 0,
+        fecha: 0,
+        BPM: 0,
     };
-    /*try {
+    try {
         const [data, field] = await (await db2.then()).execute(
             `SELECT IdDato, fecha, bpm, oxigeno, distancia, repeticion, peso FROM Datos as D
             INNER JOIN Usuario U ON U.idUsuario = D.idUsuario
             WHERE D.idUsuario = "${userIdOnline}"
-            ORDER BY IdDato DESC LIMIT ;`
+            ORDER BY IdDato DESC LIMIT 1;`
             
         );
-        datos.repeticion = (data[0].repeticion)
-        datos.bpm = (data[0].bpm)
-        datos.bpm = (data[0].bpm)
+        datos.calorias = (0.049*(data[0].peso/2.205)*2.2*time).toFixed(2);
+        datos.repeticion = (data[0].repeticion);
+        datos.fecha = today.toLocaleString() 
+        datos.rango = data[0].distancia;
+        datos.tiempo = time.toFixed(2) 
+        datos.bpm = (data[0].bpm);
         
     } catch (err) {
         console.log(err);
     }
-    console.log("########FUERZA#########") 
-    console.log((datos.fuerza/(9.81)).toFixed(4))
-    console.log("********VELOCIDAD**********")
-    console.log(datos.velocidad)
-    console.log("^^^^^^^^^RITMO^^^^^^^^^")
-    console.log(datos.ritmo)
-    console.log("!!!!!!!!TIEMPO!!!!!!!!!!")
-    console.log(datos.tiempo)*/
+    console.log("########Repeticion#########") 
+    console.log((datos.repeticion))
+    console.log("********Rango**********")
+    console.log(datos.rango)
+    console.log("^^^^^^^^^Calorias^^^^^^^^^")
+    console.log(datos.calorias)
+    console.log("!!!!!!!!BPM!!!!!!!!!!")
+    console.log(datos.BPM)
 	return (datos);
 }
 

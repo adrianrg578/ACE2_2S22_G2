@@ -27,6 +27,8 @@ export default function Entreno() {
     const [repeticion, setRepeticion] = useState("");
     const [calorias, setCalorias] = useState("");
     const [rango, setRango] = useState("");
+    const [fecha, setFecha] = useState("");
+    const [time, setTime] = useState("");
     const [BPM, setBPM] = useState("");
 
     //Estilos
@@ -35,8 +37,7 @@ export default function Entreno() {
     };
 
     const FontStyle = {
-        "fontSize": "13vh",
-        "backgroundColor": "rgba(5,.5,0.5,.3)"
+        "fontSize": "7vh",
     };
 
     const ButtonStyle = {
@@ -73,9 +74,11 @@ export default function Entreno() {
     }
 
     const sendEnd = async () => {
+        setTime(time)
         api.post(urlState, { body: { state: 0 } }).then((response) => {
             if (!response.err) {
                 console.log("Finalizo del entreno")
+                
             } else {
                 console.log("ERROR")
             }
@@ -86,25 +89,29 @@ export default function Entreno() {
     useEffect(() => {
         socket.on("datos", (data, callback) => {
             setRepeticion(data.repeticion);
-            setRango(data.rango);
             setCalorias(data.calorias);
+            setFecha(data.fecha);
+            setRango(data.rango);
+            setTime(data.tiempo);
             setBPM(data.bpm);
+
             callback({
                 IdUser: dataUsuario.IdUser
             });
         });
 
-    }, [repeticion, rango, calorias, BPM]);
+    }, [repeticion, rango, calorias, BPM, time, fecha]);
 
     return (
         <div className="container text-center" style={BoxStyle}>
+            <h3 className="text-center text-white">Fecha y Hora: {fecha} Tiempo Total: {time} min</h3>   
             <Container className="rounded">
                 <Row lg={100} >
                     <Col style={BoxHeight} className="border-light rounded d-flex justify-content-center align-items-center">
                         <Card className="text-white" style={StyleCard}>
                             <Card.Header>NUMERO DE REPETICIONES</Card.Header>
                             <Card.Body>
-                                <Card.Title>{repeticion} REP</Card.Title>
+                                <Card.Title style={FontStyle}>{repeticion} REP</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -112,7 +119,7 @@ export default function Entreno() {
                         <Card className="text-white" style={StyleCard}>
                             <Card.Header>RANGO DE MOVIMIENTO DE LA ULTIMA REPETICION</Card.Header>
                             <Card.Body>
-                                <Card.Title>{rango} </Card.Title>
+                                <Card.Title style={FontStyle}>{rango} CM</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -122,7 +129,7 @@ export default function Entreno() {
                         <Card className="text-white" style={StyleCard}>
                             <Card.Header>CANTIDAD DE CALORIAS QUEMADAS</Card.Header>
                             <Card.Body>
-                                <Card.Title>{calorias} CAL</Card.Title>
+                                <Card.Title style={FontStyle}>{calorias} CAL</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -130,7 +137,7 @@ export default function Entreno() {
                         <Card className="text-white bold" style={StyleCard}>
                             <Card.Header>FRECUENCIA CARDIACA</Card.Header>
                             <Card.Body>
-                                <Card.Title>{BPM} BPM</Card.Title>
+                                <Card.Title style={FontStyle}>{BPM} BPM</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>

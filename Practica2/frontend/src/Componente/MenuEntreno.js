@@ -19,20 +19,14 @@ export default function MenuEntreno() {
 
     return (
         <div >
-            <Tabs
+            <div
                 defaultActiveKey="entrenamiento"
                 id=""
                 className="mb-3 border-light rounded d-flex justify-content-center align-items-center"
                 justify
                 style={estilo}>
-
-                <Tab eventKey="entrenamiento" title="Entrenamiento">
-                    <Entreno/>
-                </Tab>
-                <Tab eventKey="perfil" title="Perfil">
-
-                </Tab>
-            </Tabs>
+                <Entreno />
+            </div>
         </div>
     );
 }
