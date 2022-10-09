@@ -28,7 +28,7 @@ const io = require("socket.io")(server, {
 //Datos globales
 var today = new Date();
 let datosAlmc = {};
-let userIdOnline = 1;
+let userIdOnline;
 let start = 0;
 let time = 0;
 
@@ -122,6 +122,33 @@ async function obtenerFrecuencia(){
 	return (datos);
 }
 
+async function obtenerFrecuenciaPorFecha(){
+    let datos = {};
+    try {   
+
+        const [data] = await (await db2.then()).execute(
+            `SELECT fecha, GROUP_CONCAT(bpm) AS bpm
+            FROM Datos as D
+            WHERE D.idUsuario = "${userIdOnline}"
+            GROUP BY fecha`
+            
+        );
+
+        data.forEach(function(row) {
+            row.frecuencia = row.bpm.toString().split(',').map(function(value) {
+            return { bpm : Number(value) };
+            });
+            delete row.bpm;
+        })
+        
+        datos = JSON.stringify(data)
+              
+    } catch (err) {
+        console.log(err);
+    }
+	return (datos);
+}
+
 async function obtenerRango(){
     let datos = {};
     try {
@@ -138,19 +165,47 @@ async function obtenerRango(){
 	return (datos);
 }
 
+async function obtenerRangoPorFecha(){
+    let datos = {};
+    try {   
+
+        const [data] = await (await db2.then()).execute(
+            `SELECT fecha, GROUP_CONCAT(distancia) AS distancia
+            FROM Datos as D
+            WHERE D.idUsuario = "${userIdOnline}"
+            GROUP BY fecha`
+            
+        );
+
+        data.forEach(function(row) {
+            row.rango = row.distancia.toString().split(',').map(function(value) {
+            return { distancia : Number(value) };
+            });
+            delete row.distancia;
+        })
+        
+        datos = JSON.stringify(data)
+              
+    } catch (err) {
+        console.log(err);
+    }
+	return (datos);
+}
+
 async function obtenerCalorias(){
     let datos = {};
     try {
         const [data] = await (await db2.then()).execute(
-            `SELECT peso FROM Datos as D
+            `SELECT fecha, peso FROM Datos as D
             INNER JOIN Usuario U ON U.idUsuario = D.idUsuario
             WHERE D.idUsuario = "${userIdOnline}"`
             
         );
-        let temp = [];
+        let tiempo = 0;
         datos.calorias = [];
         data.forEach(function(currentValue, index) {
-            datos.calorias.push({calorias: (0.049*(currentValue.peso/2.205)*2.2*time).toFixed(2)});
+            datos.calorias.push({calorias: (0.049*(currentValue.peso/2.205)*2.2*(tiempo/60)).toFixed(2)});
+            tiempo++;
 
         }       
         );        
@@ -159,6 +214,55 @@ async function obtenerCalorias(){
         console.log(err);
     }
 	return (JSON.stringify(datos.calorias));
+}
+
+async function obtenerCaloriasPorFecha(){
+    let datos = {};
+    try {   
+
+        const [data] = await (await db2.then()).execute(
+            `SELECT fecha, peso, GROUP_CONCAT(idDato) AS dato
+            FROM Datos as D
+            INNER JOIN Usuario U ON U.idUsuario = D.idUsuario
+            WHERE D.idUsuario = "${userIdOnline}"
+            GROUP BY fecha`
+            
+        );
+        
+        let peso_actual;
+        data.forEach(function(row) {
+            peso_actual= row.peso;
+            row.calorias_quemadas = row.dato.toString().split(',').map(function(value) {
+            return { calorias : Number(value) };
+            });
+            delete row.dato;
+            delete row.peso;
+        })
+
+        data.forEach(function(row) {
+            var i_max = row.calorias_quemadas.length - 1;
+            var tiempo_max = row.calorias_quemadas[i_max].calorias;
+            row.calorias_quemadas.forEach(function (value ) { 
+                let tiempo = tiempo_max - (tiempo_max - value.calorias);
+                value.calorias = (0.049*(peso_actual/2.205)*2.2*(tiempo/60)).toFixed(2);
+            })
+        })
+        
+        datos = JSON.stringify(data)        
+
+        /*for (var i = 0; i < datos.length; i++) {
+            var no_max = datos[i].calorias_quemadas.length-1;
+            //var no_min = element.calorias[0].calorias;
+            for( var j = 0; j < datos[i].calorias.length; j++) {
+                
+            };
+        };*/
+
+              
+    } catch (err) {
+        console.log(err);
+    }
+	return (datos);
 }
 
 //Conexion cliente-Servidor
@@ -172,8 +276,11 @@ io.on('connection', async  function(socket) {
     console.log("Stados ", start, " Tiempo ", time)
     socket.emit('datos', await dataEntrenamiento());
     socket.emit('calorias', await obtenerCalorias());
+    socket.emit('caloriasFecha', await obtenerCaloriasPorFecha());
     socket.emit('frecuencia', await obtenerFrecuencia());
+    socket.emit('frecuenciaFecha', await obtenerFrecuenciaPorFecha());
     socket.emit('rango', await obtenerRango());
+    socket.emit('rangoFecha', await obtenerRangoPorFecha());
 });
 
 //Cambio de estado
