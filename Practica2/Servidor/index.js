@@ -28,11 +28,11 @@ const io = require("socket.io")(server, {
 //Datos globales
 var today = new Date();
 let datosAlmc = {};
-let userIdOnline;
+let userIdOnline = 1;
 let start = 0;
 let time = 0;
 
-/*const port = process.env.PORT||4001;
+const port = process.env.PORT||4001;
 
 const {SerialPort} = require('serialport');
 const {ReadlineParser}=require('@serialport/parser-readline');
@@ -45,8 +45,16 @@ const parser = mySerial.pipe(new ReadlineParser({ delimiter:'\n'}))
 var data_arduino;
 
 parser.on('data',function(data){
+
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
+
+    var year = hoy.toLocaleDateString("default", {year: "numeric"});
+    var month = hoy.toLocaleDateString("default",{month: "2-digit"});
+    var day = hoy.toLocaleDateString("default", {day: "2-digit"});
+    var formattedDate = '"' + year + "-"+month+"-"+day +'"';
+
+
     let dateNow = hoy.toLocaleDateString('en-us', { dateStyle: 'short'})
     let temp = data.toString();
     const datos = temp.split(",");
@@ -54,7 +62,7 @@ parser.on('data',function(data){
         data_arduino = {BPM: datos[0], spo2: datos[1], distancia: datos[2], repeticiones: datos[3]};
         console.log(data_arduino);
         var query = coon.query(
-            `INSERT INTO Datos (idUsuario, fecha, bpm, oxigeno, distancia, repeticion) VALUES (userIdOnline, dateNow, ${datos[0]},${datos[1]},${datos[2]},${datos[3]});`,
+            `INSERT INTO Datos (idUsuario, fecha, bpm, oxigeno, distancia, repeticion) VALUES (${userIdOnline}, ${formattedDate}, ${datos[0]},${datos[1]},${datos[2]},${datos[3]});`,
             function(err){
                 if(err){throw err}
             }    
@@ -65,7 +73,7 @@ parser.on('data',function(data){
 
 mySerial.on('data', function (data){
     io.emit('datos_de_arduino',data_arduino);
-})*/
+})
 
 //Peticiones al db
 async function dataEntrenamiento(){ 
