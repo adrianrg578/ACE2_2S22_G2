@@ -1,4 +1,3 @@
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
@@ -10,8 +9,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import socket from "../Socket/Socket";
 
-
-
 //Componentes
 
 export default function Entreno() {
@@ -19,8 +16,6 @@ export default function Entreno() {
     let urlState = "http://localhost:4001/start"
 
     //Variables
-    const saved = localStorage.getItem("Usuario");
-    const dataUsuario = JSON.parse(saved)
     let api = helpHttp();
 
     //Hooks
@@ -38,12 +33,6 @@ export default function Entreno() {
 
     const FontStyle = {
         "fontSize": "7vh",
-    };
-
-    const ButtonStyle = {
-        "backgroundColor": "rgba(5,.5,0.5,.3)",
-        "border": "none",
-        "color": "white"
     };
 
     const BoxHeight = {
@@ -96,7 +85,7 @@ export default function Entreno() {
             setBPM(data.bpm);
 
             callback({
-                IdUser: dataUsuario.IdUser
+                IdUser: ""
             });
         });
 
