@@ -5,10 +5,6 @@ import MenuEntreno from "./MenuEntreno";
 
 
 export default function Dashboard() {
-    //Variables
-    const saved = localStorage.getItem("Usuario");
-    const dataUsuario = JSON.parse(saved)
-
     //Estilos
     const heightStyle = {
         height: '90vh',
@@ -19,9 +15,15 @@ export default function Dashboard() {
     };
 
     const BoxStyle = {
-        height: '80vh',
+        height: '90vh',
+        width: '500vh',
         background: "rgba(5,.5,0.5,.3)"
     };
+
+    //Variables
+    const saved = localStorage.getItem("Usuario");
+    const dataUsuario = JSON.parse(saved)
+            
 
     return (
         <div style={backgroundStyle}>
@@ -40,4 +42,3 @@ export default function Dashboard() {
     );
 }
 
-  
