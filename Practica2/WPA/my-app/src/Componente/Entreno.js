@@ -14,6 +14,25 @@ import { helpHttp } from "../Helper/helpHttp";
 //Componentes
 
 export default function Entreno() {
+
+    //conexion API y ruta
+    let urlState = "http://localhost:4001/start"
+    let api = helpHttp();
+
+
+    //Variables
+    const saved = localStorage.getItem("Usuario");
+    const dataUsuario = JSON.parse(saved)
+    
+
+    //Hooks
+    const [repeticion, setRepeticion] = useState("");
+    const [rango, setRango] = useState("");
+    const [calorias, setCalorias] = useState("");
+    const [BPM, setBPM] = useState("");
+    const [fecha, setFecha] = useState("");
+    const [time, setTime] = useState("");
+
     //Estilos
     const BoxStyle = {
         height: '55vh'
@@ -53,19 +72,26 @@ export default function Entreno() {
         "color": "white"
     };
 
-    //Variables
-    const saved = localStorage.getItem("Usuario");
-    const dataUsuario = JSON.parse(saved)
-    
+    const sendStart = async () => {
+        api.post(urlState, { body: { state: 1 } }).then((response) => {
+            if (!response.err) {
+                console.log("Inicio del entreno")
+            } else {
+                console.log("ERROR")
+            }
+        })
+    }
 
-    //Hooks
-    const [repeticion, setRepeticion] = useState("");
-    const [rango, setRango] = useState("");
-    const [calorias, setCalorias] = useState("");
-    const [BPM, setBPM] = useState("");
-
-    const sendDashboard = async () => {
-        console.log("HOLA SOY FUERZA")
+    const sendEnd = async () => {
+        setTime(time)
+        api.post(urlState, { body: { state: 0 } }).then((response) => {
+            if (!response.err) {
+                console.log("Finalizo del entreno")
+                
+            } else {
+                console.log("ERROR")
+            }
+        })
     }
 
     const [genero, setGenero] = useState('')
@@ -75,19 +101,22 @@ export default function Entreno() {
             setRepeticion(data.repeticion);
             setRango(data.rango);
             setCalorias(data.calorias);
+            setFecha(data.fecha);
             setBPM(data.bpm);
+            setTime(data.tiempo);
+
             callback({
                 IdUser: dataUsuario.IdUser
             });
         });
 
-        if(dataUsuario.Genero ==='m') {
+        if(dataUsuario.Genero ==='m' || dataUsuario.Genero ==='M') {
             setGenero('Hombre')
         } else {
             setGenero('Mujer')
         }
 
-    }, [repeticion, rango, calorias, BPM]);
+    }, [repeticion, rango, calorias, BPM, time, fecha]);
 
     return (
         <div className="container text-center" style={BoxStyle}>
@@ -156,9 +185,26 @@ export default function Entreno() {
                                 </Card>
                             </Col>
                         </Row>
+                        <Row>
+                            <Col style={BoxHeight} className="border-light rounded d-flex justify-content-center align-items-center">
+                                <Card className="text-white" style={StyleCard}>
+                                    <Card.Header>TIEMPO De entrenamiento</Card.Header>
+                                    <Card.Body>
+                                        <Card.Title style={FontStyle}>{time} min</Card.Title>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
-
+                <Row>
+					<Col>
+						<ButtonGroup aria-label="Basic example">
+							<Button className="btn outline-dark" style={InputStyle} onClick={() => sendStart()}>Iniciar Entreno</Button>
+							<Button className="btn outline-dark" style={InputStyle} onClick={() => sendEnd()}>Finalizar Entreno</Button>
+						</ButtonGroup>
+					</Col>
+				</Row>
             </Container>
         </div>
     );
