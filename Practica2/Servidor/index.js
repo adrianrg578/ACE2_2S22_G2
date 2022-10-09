@@ -20,7 +20,7 @@ const io = require("socket.io")(server, {
     cors: {
         origin: "http://localhost:3000",
         methods: ["GET", "POST"],
-        allowedHeaders: ["my-custom-header"],
+        allowedHeaders: ["Access-Control-Allow-Origin"],
         credentials: true
     }
 });
@@ -132,7 +132,9 @@ async function obtenerFrecuencia(){
 
 async function obtenerFrecuenciaPorFecha(){
     let datos = {};
-    try {   
+    try {
+        
+        (await db2).execute(`SET SESSION group_concat_max_len = 1000000;`)
 
         const [data] = await (await db2.then()).execute(
             `SELECT fecha, GROUP_CONCAT(bpm) AS bpm
@@ -176,6 +178,8 @@ async function obtenerRango(){
 async function obtenerRangoPorFecha(){
     let datos = {};
     try {   
+
+        (await db2).execute(`SET SESSION group_concat_max_len = 1000000;`)
 
         const [data] = await (await db2.then()).execute(
             `SELECT fecha, GROUP_CONCAT(distancia) AS distancia
@@ -226,7 +230,9 @@ async function obtenerCalorias(){
 
 async function obtenerCaloriasPorFecha(){
     let datos = {};
-    try {   
+    try { 
+        
+        (await db2).execute(`SET SESSION group_concat_max_len = 1000000;`)
 
         const [data] = await (await db2.then()).execute(
             `SELECT fecha, peso, GROUP_CONCAT(idDato) AS dato
@@ -249,9 +255,12 @@ async function obtenerCaloriasPorFecha(){
 
         data.forEach(function(row) {
             var i_max = row.calorias_quemadas.length - 1;
+            var tiempo_min = row.calorias_quemadas[0].calorias;
             var tiempo_max = row.calorias_quemadas[i_max].calorias;
-            row.calorias_quemadas.forEach(function (value ) { 
-                let tiempo = tiempo_max - (tiempo_max - value.calorias);
+            
+            let tiempo = 0;
+            row.calorias_quemadas.forEach(function (value) { 
+                tiempo = tiempo_max - (tiempo_max - value.calorias + tiempo_min);
                 value.calorias = (0.049*(peso_actual/2.205)*2.2*(tiempo/60)).toFixed(2);
             })
         })
