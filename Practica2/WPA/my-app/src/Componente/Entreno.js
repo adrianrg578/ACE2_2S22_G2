@@ -1,4 +1,3 @@
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
@@ -23,7 +22,7 @@ export default function Entreno() {
     //Variables
     const saved = localStorage.getItem("Usuario");
     const dataUsuario = JSON.parse(saved)
-    
+
 
     //Hooks
     const [repeticion, setRepeticion] = useState("");
@@ -63,7 +62,7 @@ export default function Entreno() {
         "backgroundColor": "rgba(5,.5,0.5,.3)",
         "border": "rgba(0, 0, 0, 0.5)",
         "width": "18rem",
-        "text-align": "left"
+        "textAlign": "left"
     };
 
     const InputStyle = {
@@ -87,7 +86,7 @@ export default function Entreno() {
         api.post(urlState, { body: { state: 0 } }).then((response) => {
             if (!response.err) {
                 console.log("Finalizo del entreno")
-                
+
             } else {
                 console.log("ERROR")
             }
@@ -110,7 +109,7 @@ export default function Entreno() {
             });
         });
 
-        if(dataUsuario.Genero ==='m' || dataUsuario.Genero ==='M') {
+        if (dataUsuario.Genero === 'm' || dataUsuario.Genero === 'M') {
             setGenero('Hombre')
         } else {
             setGenero('Mujer')
@@ -120,13 +119,13 @@ export default function Entreno() {
 
     return (
         <div className="container text-center" style={BoxStyle}>
-            
+
             <Container className="rounded">
                 <Row>
-                    <Col md= {4}>
+                    <Col md={4}>
                         <Row lg={100}>
                             <Card className="text-white" style={StyleCard2}>
-                                <Card.Header>INFORMACION DEL USUARIO</Card.Header>
+                                <Card.Header>INFORMACION DEL USUARIO </Card.Header>
                                 <Card.Body>
                                     <Card.Title>Edad: {dataUsuario.Edad}</Card.Title>
                                     <Card.Title>Peso: {dataUsuario.Peso} kg</Card.Title>
@@ -147,7 +146,7 @@ export default function Entreno() {
                             </Card>
                         </Row>
                     </Col>
-                    
+
                     <Col>
                         <Row >
                             <Col style={BoxHeight} className="border-light rounded d-flex justify-content-center align-items-center">
@@ -198,13 +197,13 @@ export default function Entreno() {
                     </Col>
                 </Row>
                 <Row>
-					<Col>
-						<ButtonGroup aria-label="Basic example">
-							<Button className="btn outline-dark" style={InputStyle} onClick={() => sendStart()}>Iniciar Entreno</Button>
-							<Button className="btn outline-dark" style={InputStyle} onClick={() => sendEnd()}>Finalizar Entreno</Button>
-						</ButtonGroup>
-					</Col>
-				</Row>
+                    <Col>
+                        <ButtonGroup aria-label="Basic example">
+                            <Button className="btn outline-dark" style={InputStyle} onClick={() => sendStart()}>Iniciar Entreno</Button>
+                            <Button className="btn outline-dark" style={InputStyle} onClick={() => sendEnd()}>Finalizar Entreno</Button>
+                        </ButtonGroup>
+                    </Col>
+                </Row>
             </Container>
         </div>
     );

@@ -1,5 +1,3 @@
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -14,6 +12,8 @@ import { helpHttp } from "../Helper/helpHttp";
 //Componentes
 
 import GrafFrecCard from './DFrecuencia';
+import GrafRangoMov from './DRangoMov';
+import GrafCalQuemadas from './DCalorias';
 
 export default function Reporte() {
     //Estilos
@@ -46,7 +46,7 @@ export default function Reporte() {
         "backgroundColor": "rgba(5,.5,0.5,.3)",
         "border": "rgba(0, 0, 0, 0.5)",
         "width": "18rem",
-        "text-align": "left"
+        "textAlign": "left"
     };
 
     const InputStyle = {
@@ -61,19 +61,8 @@ export default function Reporte() {
     const saved = localStorage.getItem("Usuario");
     const dataUsuario = JSON.parse(saved)
 
-
-    //Hooks
-    const [repeticion, setRepeticion] = useState("");
-    const [rango, setRango] = useState("");
-    const [calorias, setCalorias] = useState("");
-    const [BPM, setBPM] = useState("");
-
     const [inicio, setInicio] = useState(new Date())
     const [fin, setFin] = useState(new Date())
-
-    const sendDashboard = async () => {
-        console.log("HOLA SOY FUERZA")
-    }
 
     function handleFechaInicio(e) {
         setInicio(new Date(e.target.value))
@@ -83,30 +72,43 @@ export default function Reporte() {
         setFin(new Date(e.target.value))
     }
 
-    const [genero, setGenero] = useState('')
-    //Conexion
-    useEffect(() => {
-        socket.on("datos", (data, callback) => {
-            setRepeticion(data.repeticion);
-            setRango(data.rango);
-            setCalorias(data.calorias);
-            setBPM(data.bpm);
-            callback({
-                IdUser: dataUsuario.IdUser
-            });
-        });
 
-        if (dataUsuario.Genero == 'm') {
-            setGenero('Hombre')
-        } else {
-            setGenero('Mujer')
+    function showDeltaFrecuencia() {
+        const divRango = document.getElementById("graficaRango")
+        const divCalorias = document.getElementById("graficaCalorias")
+        const divFreciencia = document.getElementById("graficaFrecuencia")
+
+        if(divRango) {
+            divRango.style.display = 'none'
+            divCalorias.style.display = 'none'
         }
+        divFreciencia.style.display = 'block'
+    }
 
-        
+    function showDeltaRango() {
+        const divRango = document.getElementById("graficaRango")
+        const divCalorias = document.getElementById("graficaCalorias")
+        const divFreciencia = document.getElementById("graficaFrecuencia")
 
-    }, [repeticion, rango, calorias, BPM]);
+        if(divFreciencia) {
+            divFreciencia.style.display = 'none'
+            divCalorias.style.display = 'none'
+        }
+        divRango.style.display = 'block'
+    }
 
-    console.log( 'Rango', Math.round((fin.getTime() - inicio.getTime())/(1000*60*60*24)))
+    function showDeltaCalorias() {
+        const divRango = document.getElementById("graficaRango")
+        const divCalorias = document.getElementById("graficaCalorias")
+        const divFreciencia = document.getElementById("graficaFrecuencia")
+
+        if(divFreciencia) {
+            divFreciencia.style.display = 'none'
+            divRango.style.display = 'none'
+        }
+        divCalorias.style.display = 'block'
+    }
+    //console.log( 'Rango', Math.round((fin.getTime() - inicio.getTime())/(1000*60*60*24)))
 
     return (
         <div className="container text-center" style={BoxStyle}>
@@ -129,18 +131,22 @@ export default function Reporte() {
                             <Card className="text-white" style={StyleCard2}>
                                 <Card.Header>TIPOS DE GRÁFICAS</Card.Header>
                                 <Card.Body>
-                                    <Button className="btn outline-dark" style={InputStyle} size='sm' /*onClick={() => sendDashboard()}*/>Delta Frecuencia Cardiaca</Button>
-                                    <Button className="btn outline-dark" style={InputStyle} size='sm'  /*onClick={() => sendRegistro()}*/>Delta Rango de Movimiento</Button>
-                                    <Button className="btn outline-dark" style={InputStyle} size='sm'  /*onClick={() => sendRegistro()}*/>Delta Calorias Quemadas</Button>
+                                    <Button className="btn outline-dark" style={InputStyle} size='sm' onClick={() => showDeltaFrecuencia()}>Delta Frecuencia Cardiaca</Button>
+                                    <Button className="btn outline-dark" style={InputStyle} size='sm' onClick={() => showDeltaRango()}>Delta Rango de Movimiento</Button>
+                                    <Button className="btn outline-dark" style={InputStyle} size='sm' onClick={() => showDeltaCalorias()}>Delta Calorias Quemadas</Button>
                                 </Card.Body>
                             </Card>
                         </Row>
                     </Col>
 
                     <Col>
-                        <GrafFrecCard 
+                        <div id='graficaFrecuencia'><GrafFrecCard 
                             //number={Math.round((fin.getTime() - inicio.getTime())/(1000*60*60*24))}
-                        />
+                        /></div>
+                        
+                        <div id='graficaRango' style={{display: 'none'}}><GrafRangoMov/></div>
+                        <div id='graficaCalorias' style={{display: 'none'}}><GrafCalQuemadas/></div>
+                        
                     </Col>
                 </Row>
 

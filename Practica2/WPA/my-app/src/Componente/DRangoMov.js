@@ -8,7 +8,7 @@ import { CategoryScale } from 'chart.js';
 
 Chart.register(...registerables);
 
-export default function GrafFrecCard() {
+export default function GrafRangoMov() {
 
 
   //Variables
@@ -20,7 +20,7 @@ export default function GrafFrecCard() {
  
 
 
-  let urlRegister = "http://localhost:4001/frecuencia"
+  let urlRegister = "http://localhost:4001/rango"
   //const navigate = useNavigate()
   let api = helpHttp();
 
@@ -30,7 +30,7 @@ export default function GrafFrecCard() {
       if (!response.err) {
         //console.log('response', response.data)
         for(let i = 0; i < response.data.length; i++) {
-          list[i] = response.data[i].bpm
+          list[i] = response.data[i].distancia
         }
       } else {
         console.log("ERROR")
@@ -57,9 +57,9 @@ export default function GrafFrecCard() {
     labels: labels,
     datasets: [
       {
-        label: 'Frecuencia (BPM)',
+        label: 'Rango de Movimiento (mts)',
         data: datapoints,
-        borderColor: "rgba(231, 76, 60,1)",
+        borderColor: "rgba(46, 204, 113, 1)",
         fill: false,
         tension: 0.4
       }
@@ -76,7 +76,7 @@ export default function GrafFrecCard() {
 
   return (
     <div >
-      <h4>Delta Frecuencia Cardiaca</h4>
+      <h4>Delta Rango de Movimiento</h4>
       <Line
         data={data}
 

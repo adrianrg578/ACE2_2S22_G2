@@ -8,7 +8,7 @@ import { CategoryScale } from 'chart.js';
 
 Chart.register(...registerables);
 
-export default function GrafFrecCard() {
+export default function GrafCalQuemadas() {
 
 
   //Variables
@@ -20,7 +20,7 @@ export default function GrafFrecCard() {
  
 
 
-  let urlRegister = "http://localhost:4001/frecuencia"
+  let urlRegister = "http://localhost:4001/calorias"
   //const navigate = useNavigate()
   let api = helpHttp();
 
@@ -28,10 +28,11 @@ export default function GrafFrecCard() {
     let list = []
     api.post(urlRegister, { body: dataUsuario }).then((response) => {
       if (!response.err) {
-        //console.log('response', response.data)
+        console.log('response', response.data)
         for(let i = 0; i < response.data.length; i++) {
-          list[i] = response.data[i].bpm
-        }
+            let res = Math.round(0.049 * (response.data[i].peso/2.205) * 2.2 * (i / 60))
+            list[i] = res
+          }
       } else {
         console.log("ERROR")
       }
@@ -57,16 +58,14 @@ export default function GrafFrecCard() {
     labels: labels,
     datasets: [
       {
-        label: 'Frecuencia (BPM)',
+        label: 'Calorias quemadas (cal)',
         data: datapoints,
-        borderColor: "rgba(231, 76, 60,1)",
+        borderColor: "rgba(52, 152, 219, 1)",
         fill: false,
         tension: 0.4
       }
     ]
   };
-
-
 
   const StyleGraf = {
     'height': '100px',
@@ -76,7 +75,7 @@ export default function GrafFrecCard() {
 
   return (
     <div >
-      <h4>Delta Frecuencia Cardiaca</h4>
+      <h4>Delta Calorias Quemadas</h4>
       <Line
         data={data}
 
