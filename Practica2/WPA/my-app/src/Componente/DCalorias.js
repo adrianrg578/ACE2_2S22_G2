@@ -17,9 +17,6 @@ export default function GrafCalQuemadas() {
 
   const [lista, setLista] = useState([]);
 
- 
-
-
   let urlRegister = "http://localhost:4001/calorias"
   //const navigate = useNavigate()
   let api = helpHttp();
@@ -28,7 +25,6 @@ export default function GrafCalQuemadas() {
     let list = []
     api.post(urlRegister, { body: dataUsuario }).then((response) => {
       if (!response.err) {
-        console.log('response', response.data)
         for(let i = 0; i < response.data.length; i++) {
             let res = Math.round(0.049 * (response.data[i].peso/2.205) * 2.2 * (i / 60))
             list[i] = res

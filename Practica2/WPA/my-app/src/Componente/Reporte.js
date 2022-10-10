@@ -64,12 +64,17 @@ export default function Reporte() {
     const [inicio, setInicio] = useState(new Date())
     const [fin, setFin] = useState(new Date())
 
+    const [start, setStart] = useState('')
+    const [end, setEnd] = useState('')
+
     function handleFechaInicio(e) {
         setInicio(new Date(e.target.value))
+        setStart(inicio.getFullYear() + '-' + inicio.getMonth() + '-' + inicio.getDate())
     }
 
     function handleFechaFin(e) {
         setFin(new Date(e.target.value))
+        setEnd(fin.getFullYear() + '-' + fin.getMonth() + '-' + fin.getDate())
     }
 
 
@@ -108,6 +113,8 @@ export default function Reporte() {
         }
         divCalorias.style.display = 'block'
     }
+
+    
     //console.log( 'Rango', Math.round((fin.getTime() - inicio.getTime())/(1000*60*60*24)))
 
     return (
@@ -141,7 +148,9 @@ export default function Reporte() {
 
                     <Col>
                         <div id='graficaFrecuencia'><GrafFrecCard 
-                            //number={Math.round((fin.getTime() - inicio.getTime())/(1000*60*60*24))}
+                            fechainicio  = {start}
+                            fechafin = {end}
+                            //number={Math.round((fin.getTime() - )/(1000*60*60*24))}
                         /></div>
                         
                         <div id='graficaRango' style={{display: 'none'}}><GrafRangoMov/></div>

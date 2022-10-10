@@ -8,7 +8,7 @@ import { CategoryScale } from 'chart.js';
 
 Chart.register(...registerables);
 
-export default function GrafFrecCard() {
+export default function GrafFrecCard(props) {
 
 
   //Variables
@@ -17,18 +17,20 @@ export default function GrafFrecCard() {
 
   const [lista, setLista] = useState([]);
 
- 
-
-
   let urlRegister = "http://localhost:4001/frecuencia"
-  //const navigate = useNavigate()
   let api = helpHttp();
 
   useEffect(() => {
     let list = []
+
+    let usuario = {
+      Username: dataUsuario.Username,
+      FechaInicio: props.fechainicio,
+      FechaFin: props.fechafin
+    }
+
     api.post(urlRegister, { body: dataUsuario }).then((response) => {
       if (!response.err) {
-        //console.log('response', response.data)
         for(let i = 0; i < response.data.length; i++) {
           list[i] = response.data[i].bpm
         }
@@ -36,17 +38,14 @@ export default function GrafFrecCard() {
         console.log("ERROR")
       }
     })
-    //console.log('list', list)
     setLista(list)
   }, []);
 
   
   const datapoints = lista;
 
-  //console.log('lista', lista)
-
   const DATA_COUNT = datapoints.length;
-  //const DATA_COUNT = props.number;
+
   const labels = [];
 
   for (let i = 0; i < DATA_COUNT; ++i) {
@@ -67,6 +66,7 @@ export default function GrafFrecCard() {
   };
 
 
+  
 
   const StyleGraf = {
     'height': '100px',
