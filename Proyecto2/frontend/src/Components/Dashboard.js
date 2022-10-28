@@ -1,7 +1,7 @@
 import React from "react";
 
 //Componentes
-//import MenuEntreno from "./MenuEntreno";
+import MenuEntreno from "./MenuEntreno";
 
 
 export default function Dashboard() {
@@ -32,12 +32,10 @@ export default function Dashboard() {
                         <h1 className="text-center text-white">Bienvenido {dataUsuario.Nombre}</h1>
                     </div>
                     <div className="col-10 rounded mx-auto" style={BoxStyle}>
-                        Hola soy dashbaord
+                    <MenuEntreno />
                     </div>
                 </div>
             </div>
         </div>
     );
 }
-
-//<MenuEntreno />
