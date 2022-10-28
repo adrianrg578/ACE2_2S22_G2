@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require("cors")
 const db2 = require('./db2')
 var coon = require('./db')
-const app  = require('express')
+const app = express();
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -32,7 +32,7 @@ const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 
 //Puerto que le asigno la PC al BT
-const mySerial = new SerialPort({path:'COM4', baudRate:9600});
+const mySerial = new SerialPort({path:'COM6', baudRate:9600});
 
 const parser = mySerial.pipe(new ReadlineParser({delimiter: '\n'}))
 
