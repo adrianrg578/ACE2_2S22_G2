@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 
 export default function RegistroForm() {
     //Rutas
-    let urlRegister = "http://localhost:4001/register"
+    let urlRegister = "http://192.168.1.5:4001/register"
     //Variables
     const navigate = useNavigate()
     let api = helpHttp();
