@@ -37,8 +37,8 @@ export default function LoginForm() {
 
 
     const sendDashboard = async () => {
-        //navigate('/dashboard');
-        api.post(urlLogin, {body:dataUsuario}).then((response) => {
+        navigate('/dashboard');
+        /*api.post(urlLogin, {body:dataUsuario}).then((response) => {
           if(!response.err){
                 localStorage.setItem("Usuario", JSON.stringify({
                 IdUser:response[0].usename,
@@ -53,7 +53,7 @@ export default function LoginForm() {
           }else{
               console.log("ERROR")
           }
-        })
+        })*/
     }
     const sendRegistro = async () => {
         navigate('/registro');

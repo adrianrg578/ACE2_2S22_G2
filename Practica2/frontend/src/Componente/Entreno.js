@@ -13,7 +13,7 @@ import socket from "../Socket/Socket";
 
 export default function Entreno() {
     //Rutas
-    let urlState = "http://localhost:4001/start"
+    let urlState = "http://192.168.1.5:4001/start"
 
     //Variables
     let api = helpHttp();

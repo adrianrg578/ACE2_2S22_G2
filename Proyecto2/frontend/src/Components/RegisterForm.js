@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { helpHttp } from "../Helper/helpHttp";
 import React, {useState} from 'react';
 
-export default function RegistroForm() {
+export default function RegisterForm() {
     //Rutas
     let urlRegister = "http://192.168.1.5:4001/register"
     //Variables
@@ -38,8 +38,9 @@ export default function RegistroForm() {
         console.log(dataUsuario)
     };
 
-    const sendLogin = async () => {      
-        api.post(urlRegister, {body:dataUsuario}).then((res) => {
+    const sendLogin = async () => {     
+        navigate('/'); 
+        /*api.post(urlRegister, {body:dataUsuario}).then((res) => {
             console.log(res)
             if(!res.err){
                 alert("Se agregó el usuario")
@@ -47,7 +48,7 @@ export default function RegistroForm() {
             }else{
                 console.log("ERROR")
             }
-          })
+          })*/
     }
     return (
         <div className="container">
