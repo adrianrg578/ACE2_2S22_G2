@@ -58,7 +58,7 @@ export default function GrafFrecCard(props) {
       {
         label: 'Frecuencia (BPM)',
         data: datapoints,
-        borderColor: "rgba(231, 76, 60,1)",
+        borderColor: "rgba(231, 76, 60, 1)",
         fill: false,
         tension: 0.4
       }
