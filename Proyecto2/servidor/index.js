@@ -23,8 +23,15 @@ const io = require("socket.io")(server,{
     }
 });
 
+//datos globales
+var datos_del_arduino;
 var today =new Date();
 let datosAlmc = {};
+let userIdOnline = 1;
+let start = 0;
+let time = 0;
+let id_entreno = 1; 
+
 
 const port = process.env.PORT || 4001;
 
@@ -35,8 +42,6 @@ const { ReadlineParser } = require('@serialport/parser-readline');
 const mySerial = new SerialPort({path:'COM6', baudRate:9600});
 
 const parser = mySerial.pipe(new ReadlineParser({delimiter: '\n'}))
-
-var datos_del_arduino;
 
 parser.on('data', function(data){
 
@@ -52,18 +57,90 @@ parser.on('data', function(data){
     const datos = temp.split(",");
     if(datos[1]){
         datos_del_arduino = { Fuerza: datos[0], Peso: datos[1]};
+        let impulso;
+        impulso = calculo_impulso(datos[1])
         console.log(datos_del_arduino);
-       /* var query = coon.query(
-            `INSERT INTO Datos (idUsuario, fecha, bpm, oxigeno, distancia, repeticion) VALUES (${userIdOnline}, ${formattedDate}, ${datos[0]},${datos[1]},${datos[2]},${datos[3]});`,
-            function(err){
-                if(err){throw err}
-            }    
-        )*/
+        if(datos[1] < 49 && datos[0] < 49){
+            console.log("datos muy pequeños, ignorados de la base de datos")
+        }else{
+            var query = coon.query(
+                `INSERT INTO Datos (id_user, fecha, id_Entrenamiento, fuerza_impulso, fuerza_llegada, peso_arduino) VALUES (${userIdOnline}, "2022-10-27",${id_entreno} ,${impulso},${datos[0]},${datos[1]});`,
+                function(err){
+                    if(err){throw err}
+                }    
+            )
+        }
     }
 })
 
+function calculo_impulso(peso_ard,){
+    let resultado;
+
+    if (peso_ard>49 && peso_ard<95){
+        resultado = peso_ard * 2
+    } else{
+        resultado = 0;
+    }
+    return resultado;
+}
+
+
+//enmision de los datos completos
 mySerial.on('data',function(data){
     io.emit('datos_de_arduino',datos_del_arduino);
+})
+
+
+//Retorna los usuarios en la base de datos
+app.get("/users", function(req, res){
+    var query = coon.query(
+        "SELECT * FROM Usuario;",
+        function(err, result){
+            if (err) throw err
+            else res.send(result)
+        }
+    )
+})
+
+//registra un nuevo usuario a la base de datos
+app.post('/register', function (req, res){
+    var query = coon.query(
+        `INSERT INTO Usuario (nombre, apellido, username, pass, edad, peso, genero, estatura) VALUES 
+       "${req.body.Nombre}", "${req.body.Apellido}", ("${req.body.Username}", "${req.body.Contrasena}", 
+        ${parseInt(req.body.Edad)}, ${parseInt(req.body.Peso)}, "${req.body.Genero}", ${req.body.Estatura});`,
+        function (err, result){
+            if (err){
+                throw err
+            }else{
+                respuesta = "Usuario: ", req.body.Username, "Registrado correctamente"
+                res.send(respuesta)
+                console.log(respuesta)
+            }
+        }
+    )
+})
+
+//Inicio de sesion
+app.post("/login", function(req, rest){
+    var query = coon.query(
+        `SELECT idUsuario, username, nombre, apellido, edad, peso, estatura, genero FROM Usuario WHERE ((username = '${req.body.Username}') AND (pass = '${req.body.Contrasena}'))`,
+        function(err,result){
+            if (err){
+                throw err
+            }else{
+                res.send(result)
+                datosAlmc = result
+                if (result.length == 0){
+                    console.log("Usuario o contraseña Incorrectas")
+                }else{
+                    //pasa usarlos globalmente despues
+                    console.log("El usuario inicio sesion correctamente")
+                    userIdOnline = datosAlmc[0].idUsuario
+                    console.log(userIdOnline)
+                }
+            }
+        }
+    )
 })
 
 server.listen(
