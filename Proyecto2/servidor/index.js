@@ -105,9 +105,7 @@ app.get("/users", function(req, res){
 //registra un nuevo usuario a la base de datos
 app.post('/register', function (req, res){
     var query = coon.query(
-        `INSERT INTO Usuario (nombre, apellido, username, pass, edad, peso, genero, estatura) VALUES 
-       "${req.body.Nombre}", "${req.body.Apellido}", ("${req.body.Username}", "${req.body.Contrasena}", 
-        ${parseInt(req.body.Edad)}, ${parseInt(req.body.Peso)}, "${req.body.Genero}", ${req.body.Estatura});`,
+        `INSERT INTO Usuario (nombre, apellido, username, pass, edad, peso, genero, estatura) VALUES ("${req.body.Nombre}", "${req.body.Apellido}", "${req.body.Username}", "${req.body.Contrasena}", ${parseInt(req.body.Edad)}, ${parseInt(req.body.Peso)}, "${req.body.Genero}", ${req.body.Estatura});`,
         function (err, result){
             if (err){
                 throw err

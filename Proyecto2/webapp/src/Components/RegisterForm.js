@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 
 export default function RegisterForm() {
     //Rutas
-    let urlRegister = "http://192.168.1.5:4001/register"
+    let urlRegister = "http://localhost:4001/register"
     //Variables
     const navigate = useNavigate()
     let api = helpHttp();
@@ -15,7 +15,7 @@ export default function RegisterForm() {
         Username: "",
         Contrasena: "",
         Nombre: "",
-        Apellido: "Perez",
+        Apellido: "perez",
         Edad: "",
         Peso: "",
         Genero: "",
@@ -40,7 +40,7 @@ export default function RegisterForm() {
 
     const sendLogin = async () => {     
         navigate('/'); 
-        /*api.post(urlRegister, {body:dataUsuario}).then((res) => {
+        api.post(urlRegister, {body:dataUsuario}).then((res) => {
             console.log(res)
             if(!res.err){
                 alert("Se agregó el usuario")
@@ -48,7 +48,7 @@ export default function RegisterForm() {
             }else{
                 console.log("ERROR")
             }
-          })*/
+          })
     }
     return (
         <div className="container">

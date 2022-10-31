@@ -36,7 +36,6 @@ export const helpHttp = () => {
 
     const post = (url, options = {}) => {
         options.method = "POST";
-        console.log("de helpHTtp , -- ", options)
         return customFetch(url, options);
     };
 
