@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 
 export default function RegisterForm() {
     //Rutas
-    let urlRegister = "http://192.168.1.5:4001/register"
+    let urlRegister = "http://localhost:4001/register"
     //Variables
     const navigate = useNavigate()
     let api = helpHttp();
@@ -24,9 +24,9 @@ export default function RegisterForm() {
     
     //Estilos
     const InputStyle = {
-        "backgroundColor": "rgba(5,.5,0.5,.3)",
-        "border": "none",
-        "color": "white"
+        backgroundColor: "rgba(5,.5,0.5,.3)",
+        border: "none",
+        color: "white"
     };
 
     //Funciones
@@ -39,8 +39,7 @@ export default function RegisterForm() {
     };
 
     const sendLogin = async () => {     
-        navigate('/'); 
-        /*api.post(urlRegister, {body:dataUsuario}).then((res) => {
+        api.post(urlRegister, {body:dataUsuario}).then((res) => {
             console.log(res)
             if(!res.err){
                 alert("Se agregó el usuario")
@@ -48,7 +47,7 @@ export default function RegisterForm() {
             }else{
                 console.log("ERROR")
             }
-          })*/
+          })
     }
     return (
         <div className="container">
@@ -96,7 +95,7 @@ export default function RegisterForm() {
                             type="text" 
                             className="form-control" 
                             name="Peso" 
-                            placeholder="Peso(lb)" 
+                            placeholder="Peso(kg)" 
                             onChange={handleInputChange}/>
                     </div>
                 </div>

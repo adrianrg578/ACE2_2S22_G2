@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 
 export default function LoginForm() {
     //Rutas
-    let urlLogin = "http://192.168.1.5:4001/login"
+    let urlLogin = "http://localhost:4001/login"
 
     //Variables
     const navigate = useNavigate()
@@ -21,9 +21,9 @@ export default function LoginForm() {
 
     //Estilos
     const InputStyle = {
-        "backgroundColor": "rgba(5,.5,0.5,.3)",
-        "border": "none",
-        "color": "white"
+        backgroundColor: "rgba(5,.5,0.5,.3)",
+        border: "none",
+        color: "white"
     };
 
     //Funciones
@@ -37,8 +37,7 @@ export default function LoginForm() {
 
 
     const sendDashboard = async () => {
-        navigate('/dashboard');
-        /*api.post(urlLogin, {body:dataUsuario}).then((response) => {
+        api.post(urlLogin, {body:dataUsuario}).then((response) => {
           if(!response.err){
                 localStorage.setItem("Usuario", JSON.stringify({
                 IdUser:response[0].usename,
@@ -53,7 +52,7 @@ export default function LoginForm() {
           }else{
               console.log("ERROR")
           }
-        })*/
+        })
     }
     const sendRegistro = async () => {
         navigate('/registro');

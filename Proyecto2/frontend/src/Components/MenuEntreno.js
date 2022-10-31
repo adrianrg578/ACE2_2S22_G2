@@ -30,9 +30,9 @@ export default function MenuEntreno() {
 
     //Estilos
     const InputStyle = {
-        "backgroundColor": "rgba(5,.5,0.5,.3)",
-        "border": "none",
-        "color": "white"
+        backgroundColor: "rgba(5,.5,0.5,.3)",
+        border: "none",
+        color: "white"
     };
 
     const BoxStyle2 = {
@@ -43,19 +43,13 @@ export default function MenuEntreno() {
     };
 
     const estilo = {
-        "border": "none",
-        "color": "white"
+        border: "none",
+        color: "white"
     };
 
     const FontStyle = {
-        "fontSize": "13vh",
-        "backgroundColor": "rgba(5,.5,0.5,.3)"
-    };
-
-    const ButtonStyle = {
-        "backgroundColor": "rgba(5,.5,0.5,.3)",
-        "border": "none",
-        "color": "white"
+        fontSize: "13vh",
+        backgroundColor: "rgba(5,.5,0.5,.3)"
     };
 
     const sendDashboard = async () => {
