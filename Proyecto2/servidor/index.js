@@ -143,6 +143,155 @@ app.post("/login", function(req, rest){
     )
 })
 
+//Fuerza de llegada
+app.post("/fuerza", function(req, rest){
+    var query = coon.query(
+        `SELECT fecha, peso, GROUP_CONCAT(fuerza_llegada) AS dato
+            FROM Datos as D
+            INNER JOIN Usuario U ON U.id_user = D.id_user
+            WHERE D.id_user = "${userIdOnline}"
+            AND fecha ="${req.body.Fecha}"
+            GROUP BY fecha`,
+        function(err,result){
+            if (err){
+                throw err
+            }else{
+                rest.send(result)
+                datosAlmc = result
+                console.log(result);
+            }
+        }
+    )
+})
+
+app.post("/calorias", function(req, rest){
+    var query = coon.query(
+        `SELECT fecha, peso, GROUP_CONCAT(id_Dato) AS dato
+            FROM Datos as D
+            INNER JOIN Usuario U ON U.id_user = D.id_user
+            WHERE D.id_user = "${userIdOnline}"
+            AND fecha ="${req.body.Fecha}"
+            GROUP BY fecha`,
+        function(err,result){
+            if (err){
+                throw err
+            }else{
+                let datos = {};
+                let peso_actual;
+                result.forEach(function (row) {
+                    peso_actual = row.peso;
+                    row.calorias_quemadas = row.dato.toString().split(',').map(function (value) {
+                        return { calorias: Number(value) };
+                    });
+                    delete row.dato;
+                    delete row.peso;
+                })
+
+                result.forEach(function (row) {
+                    var i_max = row.calorias_quemadas.length - 1;
+                    var tiempo_min = row.calorias_quemadas[0].calorias;
+                    var tiempo_max = row.calorias_quemadas[i_max].calorias;
+
+                    let tiempo = 0;
+                    row.calorias_quemadas.forEach(function (value) {
+                        tiempo = tiempo_max - (tiempo_max - value.calorias + tiempo_min);
+                        value.calorias = (0.049 * (peso_actual / 2.205) * 2.2 * (tiempo / 60)).toFixed(2);
+                    })
+                })
+
+            //datos = JSON.stringify(result)
+            rest.send(result);
+            }
+        }
+    )
+})
+
+app.post("/ritmo", function(req, rest){
+    var query = coon.query(
+        `SELECT fecha, GROUP_CONCAT(fuerza_llegada) AS dato
+            FROM Datos as D
+            INNER JOIN Usuario U ON U.id_user = D.id_user
+            WHERE D.id_user = "${userIdOnline}"
+            AND fecha ="${req.body.Fecha}"
+            GROUP BY fecha`,
+        function(err,result){
+            if (err){
+                throw err
+            }else{
+                let datos = {};
+                result.forEach(function (row) {
+                    row.ritmo = row.dato.toString().split(',').map(function (value) {
+                        return { acierta: Number(value) };
+                    });
+                    delete row.dato;
+                })
+
+                let frecuencia = req.body.Frecuencia;
+                let aux = 1;
+
+                result.forEach(function (row) {
+                    row.ritmo.forEach(function (value) {
+                        if (value.acierta < 10)
+                        {
+                            value.acierta = 0
+                        }
+                        else if( aux%frecuencia == 0)
+                        {
+                            if(value.acierta > 10)
+                            {
+                                value.acierta = 1
+                            }
+                        }
+                        else{
+                            value.acierta = -1
+                        }
+                        aux++;
+                    })
+                })
+
+            //datos = JSON.stringify(result)
+            rest.send(result);
+            }
+        }
+    )
+})
+
+app.post("/infoext", function(req, res){
+    var query = coon.query(
+        `SELECT fecha, id_Entrenamiento, CONCAT(MAX(id_Dato) - MIN(id_Dato)) as tiempo_entreno
+        FROM Datos as D
+        INNER JOIN Usuario U ON U.id_user = D.id_user
+        WHERE D.id_user = "${userIdOnline}" AND fecha between '${req.body.FechaI}' AND '${req.body.FechaF}'
+        GROUP BY fecha, id_Entrenamiento`,
+        function(err,result){
+            if (err){
+                throw err
+            }else{
+                res.send(result);                    
+                }                
+            }
+    )
+})
+
+function esLunes(date = new Date()) {
+    return date.getDay() === 1;
+  }
+
+  function buscarLunes(date = new Date()){
+    if(date.getDay === 1)
+    {
+        return date
+    }
+    else
+    {
+        while(date.getDay != 1)
+        {
+            date.setDate(date.getDate() - 1);
+        }
+        return date
+    }
+  }
+
 server.listen(
     4001,
     ()=>{
