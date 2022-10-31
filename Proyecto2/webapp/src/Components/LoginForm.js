@@ -40,12 +40,9 @@ export default function LoginForm() {
         //navigate('/dashboard');
         api.post(urlLogin, {body:dataUsuario}).then((response) => {
           if(!response.err){
-                console.log("body -->", response)
-                console.log("respuesta -->", response)
-
                 localStorage.setItem("Usuario", JSON.stringify({
-                IdUser:response[0].id_user,
-                Username:response[0].username,
+                IdUser: response[0].id_user,
+                Username: response[0].username,
                 Nombre: response[0].nombre,
                 Edad: response[0].edad,
                 Peso: response[0].peso,

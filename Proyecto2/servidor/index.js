@@ -123,7 +123,7 @@ app.post('/register', function (req, res){
 //Inicio de sesion
 app.post("/login", function(req, rest){
     var query = coon.query(
-        `SELECT id_user, username, nombre, apellido, edad, peso, estatura, genero FROM Usuario WHERE ((username = '${req.body.username}') AND (pass = '${req.body.pass}'))`,
+        `SELECT id_user, username, nombre, apellido, edad, peso, estatura, genero FROM Usuario WHERE ((username = '${req.body.Username}') AND (pass = '${req.body.Contrasena}'))`,
         function(err,result){
             if (err){
                 throw err
@@ -131,8 +131,8 @@ app.post("/login", function(req, rest){
                 rest.send(result)
                 datosAlmc = result
                 if (result.length == 0){
-                    console.log("Usuario o contraseña Incorrectas -->",result )
-                    //rest.send(result)
+                    console.log("Usuario o contraseña Incorrectas -->" )
+                    rest.send("Usuario o contraseña Incorrectas -->", result)
                 }else{
                     //pasa usarlos globalmente despues
                     console.log("El usuario inicio sesion correctamente")
