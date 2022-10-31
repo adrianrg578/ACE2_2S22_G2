@@ -11,15 +11,17 @@ export default function Dashboard() {
 
     //Estilos
     const heightStyle = {
-        height: '90vh',
+        height: '100vh',
+        //"background": "black"
     };
 
     const backgroundStyle = {
-        "background": "transparent"
+        background: "transparent"
     };
 
     const BoxStyle = {
-        height: '50rem',
+        height: '80vh',
+        //"background": "pink",
         background: "rgba(5,.5,0.5,.3)"
     };
 
