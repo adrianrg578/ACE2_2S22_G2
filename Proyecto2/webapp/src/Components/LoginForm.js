@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 
 export default function LoginForm() {
     //Rutas
-    let urlLogin = "http://192.168.1.5:4001/login"
+    let urlLogin = "http://localhost:4001/login"
 
     //Variables
     const navigate = useNavigate()
@@ -37,11 +37,15 @@ export default function LoginForm() {
 
 
     const sendDashboard = async () => {
-        navigate('/dashboard');
-        /*api.post(urlLogin, {body:dataUsuario}).then((response) => {
+        //navigate('/dashboard');
+        api.post(urlLogin, {body:dataUsuario}).then((response) => {
           if(!response.err){
+                console.log("body -->", response)
+                console.log("respuesta -->", response)
+
                 localStorage.setItem("Usuario", JSON.stringify({
-                IdUser:response[0].usename,
+                IdUser:response[0].id_user,
+                Username:response[0].username,
                 Nombre: response[0].nombre,
                 Edad: response[0].edad,
                 Peso: response[0].peso,
@@ -53,7 +57,7 @@ export default function LoginForm() {
           }else{
               console.log("ERROR")
           }
-        })*/
+        })
     }
     const sendRegistro = async () => {
         navigate('/registro');
