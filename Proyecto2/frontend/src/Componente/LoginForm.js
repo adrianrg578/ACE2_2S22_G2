@@ -21,9 +21,9 @@ export default function LoginForm() {
 
     //Estilos
     const InputStyle = {
-        "backgroundColor": "rgba(5,.5,0.5,.3)",
-        "border": "none",
-        "color": "white"
+        backgroundColor: "rgba(5,.5,0.5,.3)",
+        border: "none",
+        color: "white"
     };
 
     //Funciones

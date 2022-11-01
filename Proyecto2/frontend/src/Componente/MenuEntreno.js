@@ -20,14 +20,14 @@ export default function MenuEntreno() {
 
     //Hooks
     const [frecuencia, setFrecuencia] = useState({ frecuencia: 0 });
-    const [velocidad, setVelocidad] = useState("");
+    const [fuerzaImpuslo, setFuerzaImpuslo] = useState("");
+    const [fuerzaLlegada, setFuerzaLlegada] = useState("");
     const [calorias, setCalorias] = useState("");
-    const [fuerza, setFuerza] = useState("");
-    const [tiempo, setTiempo] = useState("");
     const [fecha, setFecha] = useState("");
     const [ritmo, setRitmo] = useState("");
     const [time, setTime] = useState("");
     const [peso, setPeso] = useState("");
+    const [start, setStart] = useState(false);
 
     //Estilos
     const InputStyle = {
@@ -41,7 +41,7 @@ export default function MenuEntreno() {
     };
 
     const BoxStyle = {
-        height: '55vh'
+        height: "55vh"
     };
 
     const estilo = {
@@ -60,6 +60,7 @@ export default function MenuEntreno() {
             ...frecuencia,
             [e.target.name]: e.target.value
         })
+        console.log("frecuenciaauwu: "+frecuencia.frecuencia)
     };
 
     const sendStart = async () => {
@@ -70,13 +71,7 @@ export default function MenuEntreno() {
                 console.log("ERROR")
             }
         })
-
-        let datos = {
-            IdUsuario: dataUsuario.IdUsuario,
-        }
-        socket.emit('dato', datos);
-        console.log("Enviado: "+datos.IdUsuario)
-        console.log("local storage: "+dataUsuario.IdUsuario)
+        setStart(true)
     }
 
     const sendEnd = async () => {
@@ -89,32 +84,37 @@ export default function MenuEntreno() {
                 console.log("ERROR")
             }
         })
+        setStart(false)
     }
 
     //Conexion
     useEffect(() => {
         socket.on("datos", (data, callback) => {
-            setFuerza(data.FuerzaImpulso);
-            setPeso(data.peso_arduino);
+            setFuerzaImpuslo(data.FuerzaImpulso);
+            setFuerzaLlegada(data.FuerzaLlegada);
+            setPeso(data.PesoJumpBox);
             setFecha(data.fecha);
             setTime(data.tiempo);
-            
+            setCalorias((0.049 * dataUsuario.Peso * 2.2 * data.tiempo).toFixed(2))
+
+            setRitmo(Math.random()+0.5)
+
             callback({
                 IdUser: ""
             });
         });
 
-    }, [fuerza, peso, time, fecha]);
+    }, [fuerzaImpuslo, fuerzaLlegada, peso, time, fecha, calorias, dataUsuario.Peso]);
 
     return (
         <div >
             <Tabs
-                defaultActiveKey="fuerza"
+                defaultActiveKey="fuerzaI"
                 id=""
                 className="mb-3 border-light rounded d-flex justify-content-center align-items-center"
                 justify
                 style={estilo}>
-                <Tab eventKey="fuerza" title="Fuerza">
+                <Tab eventKey="fuerzaI" title="Fuerza de Impulso">
                     <div className="container text-center" style={BoxStyle}>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
@@ -125,12 +125,12 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{fuerza} kg</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? fuerzaImpuslo : 0}kg</p>
                             </div>
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-10 mx-auto">
-                                <ProgressBar variant="success" animated now={fuerza} />
+                                <ProgressBar variant="success" animated now={start ? fuerzaImpuslo*0.7 : 0} />
                             </div>
                         </div>
                         <div className="col-3 mx-auto">
@@ -141,7 +141,7 @@ export default function MenuEntreno() {
                         </div>
                     </div>
                 </Tab>
-                <Tab eventKey="velocidad" title="Velocidad">
+                <Tab eventKey="fuerzaL" title="Fuerza de Llegada">
                     <div className="container text-center" style={BoxStyle}>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
@@ -152,12 +152,12 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{velocidad} hit/min</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? fuerzaLlegada : 0}kg</p>
                             </div>
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-10 mx-auto">
-                                <ProgressBar variant="success" animated now={velocidad} />
+                                <ProgressBar variant="success" animated now={start ? fuerzaLlegada*0.7 : 0} />
                             </div>
                         </div>
                         <div className="col-3 mx-auto">
@@ -185,7 +185,8 @@ export default function MenuEntreno() {
                                         className="form-control"
                                         placeholder="Frecuencia 0.5 a 1.5 seg"
                                         name="frecuencia"
-                                        onChange={handleInputChange} />
+                                        onChange={handleInputChange} 
+                                    />
                                 </form>
                             </div>
                         </div>
@@ -194,7 +195,7 @@ export default function MenuEntreno() {
                                 <GaugeChart
                                     style={BoxStyle2}
                                     className="rounded"
-                                    percent={((time * 100 / (peso * 5)) / 100)}
+                                    percent={((ritmo * 100 / (frecuencia.frecuencia*4)) / 100)}
                                     nrOfLevels={3}
                                     colors={["#566573", "#2C3E50", "#566573"]}
                                 />
@@ -221,12 +222,12 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{calorias} cal</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? calorias : 0}cal</p>
                             </div>
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-10 mx-auto">
-                                <ProgressBar variant="success" animated now={calorias} />
+                                <ProgressBar variant="success" animated now={start ? calorias : 0} />
                             </div>
                         </div>
                         <div className="col-3 mx-auto">
@@ -248,12 +249,12 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{peso} kg</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? peso : 0}kg</p>
                             </div>
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-10 mx-auto">
-                                <ProgressBar variant="success" animated now={peso} />
+                                <ProgressBar variant="success" animated now={start ? peso : 0} />
                             </div>
                         </div>
                         <div className="col-3 mx-auto">

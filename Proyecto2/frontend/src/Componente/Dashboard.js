@@ -3,7 +3,6 @@ import React from "react";
 //Componentes
 import MenuEntreno from "./MenuEntreno";
 
-
 export default function Dashboard() {
     //Variables
     const saved = localStorage.getItem("Usuario");
@@ -11,7 +10,7 @@ export default function Dashboard() {
 
     //Estilos
     const heightStyle = {
-        height: '90vh',
+        height: "90vh",
     };
 
     const backgroundStyle = {
@@ -19,7 +18,7 @@ export default function Dashboard() {
     };
 
     const BoxStyle = {
-        height: '85vh',
+        height: "85vh",
         background: "rgba(5,.5,0.5,.3)"
     };
 

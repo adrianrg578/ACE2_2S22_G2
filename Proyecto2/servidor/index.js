@@ -34,7 +34,6 @@ let id_entreno = 1;
 
 const port = process.env.PORT || 4001;
 
-/*
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 
@@ -79,7 +78,6 @@ parser.on('data', function(data){
     }
 })
 
-*/
 
 function calculo_impulso(peso_ard,) {
     let resultado;
@@ -102,6 +100,69 @@ app.get("/users", function (req, res) {
             else res.send(result)
         }
     )
+})
+
+//Peticiones al db
+async function dataEntrenamiento() {
+    let datos = {
+        FuerzaImpulso: 0,
+        FuerzaLlegada: 0,
+        PesoJumpBox: 0,
+        fecha: today.toLocaleString(),
+        tiempo: 0
+    };
+
+    try {
+        const [dataFI, field0] = await (await db2.then()).execute(
+            `SELECT id_Dato, fuerza_impulso FROM Datos WHERE id_user = ${userIdOnline} AND fuerza_impulso>0 
+            ORDER BY id_Dato DESC LIMIT 1;`
+        );
+        datos.FuerzaImpulso = dataFI[0].fuerza_impulso
+
+        const [dataFL, field1] = await (await db2.then()).execute(
+            `SELECT id_Dato, fuerza_llegada FROM Datos WHERE id_user = ${userIdOnline} AND fuerza_impulso>0 
+            ORDER BY id_Dato DESC LIMIT 1;`
+        );
+        datos.FuerzaLlegada = dataFL[0].fuerza_llegada
+
+        const [dataP, field2] = await (await db2.then()).execute(
+            `SELECT id_Dato, peso_arduino FROM Datos WHERE id_user =  ${userIdOnline} AND peso_arduino>0 
+            ORDER BY id_Dato DESC LIMIT 1;`
+        );
+        datos.PesoJumpBox = dataP[0].peso_arduino
+        datos.tiempo = time.toFixed(2)
+    } catch (err) {
+        console.log(err);
+    }
+    /*console.log("#######FuerzaI#######")
+    console.log((datos.FuerzaImpulso))
+    console.log(".......FuerzaL.......")
+    console.log((datos.FuerzaLlegada))
+    console.log("********Peso**********")
+    console.log(datos.PesoJumpBox)
+    console.log("////////fecha////////")
+    console.log(datos.fecha)
+    console.log("^^^^^^^^tiempo^^^^^^^^")
+    console.log(datos.tiempo)*/
+    return datos;
+}
+
+//Conexion cliente-Servidor
+io.on('connection', async function (socket) {
+    console.log("conectadoDatos!");
+    if (start === 1) {
+        time += (1 / 60);
+    } else {
+        time = 0;
+    }
+
+    console.log("Stados ", start, " Tiempo ", time)
+    socket.emit('datos', await dataEntrenamiento()); 
+});
+
+//Cambio de estado
+app.post("/start", function (req, res) {
+    start = req.body.state
 })
 
 //registra un nuevo usuario a la base de datos
