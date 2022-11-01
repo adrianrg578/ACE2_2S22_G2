@@ -458,6 +458,74 @@ function buscarLunes(date = new Date()) {
     }
 }
 
+//total de entrenamientosn
+app.post("/totalEntreno", function (req, rest) {
+    var query = coon.query(
+        `SELECT COUNT(d.id_user) AS Cantidad 
+        FROM Datos d 
+        WHERE
+           DATE(fecha) BETWEEN '${req.body.dateInit}' AND '${req.body.dateEnd}' AND d.id_user = '${req.body.user}';`,
+        function (err, result) {
+            if (err) {
+                throw err
+            } else {
+                rest.send(result)
+            }
+        }
+    )
+})
+
+//total de entrenamientosn
+app.post("/Entreno1", function (req, rest) {
+    var query = coon.query(
+        `SELECT COUNT(d.id_user) AS Cantidad 
+        FROM Datos d 
+        WHERE
+           DATE(fecha) BETWEEN '${req.body.dateInit}' AND '${req.body.dateEnd}' AND d.id_user = '${req.body.user}' AND d.id_Entrenamiento='1';`,
+        function (err, result) {
+            if (err) {
+                throw err
+            } else {
+                rest.send(result)
+            }
+        }
+    )
+})
+
+//total de entrenamientosn
+app.post("/Entreno2", function (req, rest) {
+    var query = coon.query(
+        `SELECT COUNT(d.id_user) AS Cantidad 
+        FROM Datos d 
+        WHERE
+           DATE(fecha) BETWEEN '${req.body.dateInit}' AND '${req.body.dateEnd}' AND d.id_user = '${req.body.user}' AND d.id_Entrenamiento='2';`,
+        function (err, result) {
+            if (err) {
+                throw err
+            } else {
+                rest.send(result)
+            }
+        }
+    )
+})
+
+//total de entrenamientosn
+app.post("/Entreno3", function (req, rest) {
+    var query = coon.query(
+        `SELECT COUNT(d.id_user) AS Cantidad 
+        FROM Datos d 
+        WHERE
+           DATE(fecha) BETWEEN '${req.body.dateInit}' AND '${req.body.dateEnd}' AND d.id_user = '${req.body.user}' AND d.id_Entrenamiento='3';`,
+        function (err, result) {
+            if (err) {
+                throw err
+            } else {
+                rest.send(result)
+            }
+        }
+    )
+})
+
 server.listen(
     4001,
     () => {
