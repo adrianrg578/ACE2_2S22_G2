@@ -19,7 +19,33 @@ export function GrafFuerza() {
         'borderRadius': '5px'
     };
 
-    const datapoints = [10, 5, 9, 4, 5];
+    let [fimpulso, setFimpulso] = useState([])
+    let [fllegada, setFllegada] = useState([])
+
+    const saved = localStorage.getItem("Usuario");
+    const dataUsuario = JSON.parse(saved)
+
+    let endpoint = "http://localhost:4001/fuerza";
+    let api = helpHttp();
+
+    useEffect(() => {
+
+        setInterval(() => setGrafica(), 1000)
+    }, [])
+
+    function setGrafica() {
+        api.post(endpoint, { body: dataUsuario }).then((response) => {
+            if (!response.err) {
+                //console.log('fuerzaimpulso', response.fuerzaimpulso.split(','))
+                setFimpulso(response.fuerzaimpulso.split(','))
+                //console.log('fuerzallegada', response.fuerzallegada.split(','))
+                setFllegada(response.fuerzallegada.split(','))
+            }
+        })
+    }
+
+    const datapoints = fimpulso;
+
     const DATA_COUNT = datapoints.length;
     const labels = [];
 
@@ -31,12 +57,20 @@ export function GrafFuerza() {
         labels: labels,
         datasets: [
             {
-                label: 'Calorias quemadas (cal)',
-                data: datapoints,
+                label: 'Fuerza de Impulso',
+                data: fimpulso,
                 borderColor: "rgba(52, 152, 219, 1)",
                 fill: false,
                 tension: 0.0, // 0.4
-                //stepped: true,
+                stepped: true,
+            },
+            {
+                label: 'Fuerza de Llegada',
+                data: fllegada,
+                borderColor: "rgba(231, 76, 60, 1)",
+                fill: false,
+                tension: 0.0, // 0.4
+                stepped: true,
             }
         ]
     };
@@ -44,7 +78,7 @@ export function GrafFuerza() {
     const config = {
         plugins: {
             legend: {
-                display: false
+                display: true
             },
             title: {
                 display: false
@@ -75,7 +109,37 @@ export function GrafCaloria() {
         'borderRadius': '5px'
     };
 
-    const datapoints = [10, 5, 9, 4, 5];
+    let [calorias, setCalorias] = useState([])
+
+    const saved = localStorage.getItem("Usuario");
+    const dataUsuario = JSON.parse(saved)
+
+    let endpoint = "http://localhost:4001/calorias";
+    let api = helpHttp();
+
+    useEffect(() => {
+        setInterval(() => setGrafica(), 1000)
+    }, [])
+
+    function setGrafica() {
+        api.post(endpoint, { body: dataUsuario }).then((response) => {
+            if (!response.err) {
+                //console.log('fuerzaimpulso', response.fuerzaimpulso.split(','))
+                
+                //console.log('fuerzallegada', response.fuerzallegada.split(','))
+                //setCalorias(response.fuerzaimpulso.split(','))
+                let lista = new Array()
+                response.calorias_quemadas.forEach(element => {
+                    //lista.push(element)
+                    lista.push(element.calorias)
+                });
+
+                setCalorias(lista)
+            }
+        })
+    }
+
+    const datapoints = calorias;
     const DATA_COUNT = datapoints.length;
     const labels = [];
 
@@ -130,7 +194,33 @@ export function GrafRitmo() {
         'borderRadius': '5px'
     };
 
-    const datapoints = [10, 5, 9, 4, 5];
+    let [ritmo, setRitmo] = useState([])
+
+    const saved = localStorage.getItem("Usuario");
+    const dataUsuario = JSON.parse(saved)
+
+    let endpoint = "http://localhost:4001/ritmo";
+    let api = helpHttp();
+
+    useEffect(() => {
+        setInterval(() => setGrafica(), 1000)
+    }, [])
+
+    function setGrafica() {
+        api.post(endpoint, { body: dataUsuario }).then((response) => {
+            if (!response.err) {
+                
+                let lista = new Array()
+
+                response.ritmo.forEach(element => {
+                    lista.push(element.acierta)
+                })
+                setRitmo(lista)
+            }
+        })
+    }
+
+    const datapoints = ritmo;
     const DATA_COUNT = datapoints.length;
     const labels = [];
 
@@ -142,12 +232,11 @@ export function GrafRitmo() {
         labels: labels,
         datasets: [
             {
-                label: 'Calorias quemadas (cal)',
+                label: 'Ritmo',
                 data: datapoints,
                 borderColor: "rgba(46, 204, 113, 1)",
-                fill: false,
-                tension: 0.0, // 0.4
-                //stepped: true,
+                fill: true,
+                stepped: true,
             }
         ]
     };
