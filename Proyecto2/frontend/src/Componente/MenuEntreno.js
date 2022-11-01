@@ -91,7 +91,7 @@ export default function MenuEntreno() {
     useEffect(() => {
         socket.on("datos", (data, callback) => {
             setFuerzaImpuslo(data.FuerzaImpulso);
-            setFuerzaLlegada(data.FuerzaLlegada);
+            setFuerzaLlegada((data.FuerzaLlegada*0.15).toFixed(0));
             setPeso(data.PesoJumpBox);
             setFecha(data.fecha);
             setTime(data.tiempo);
@@ -125,7 +125,7 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? fuerzaImpuslo : 0}kg</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? fuerzaImpuslo : 0} kg</p>
                             </div>
                         </div>
                         <div className="row mb-5">
@@ -141,7 +141,7 @@ export default function MenuEntreno() {
                         </div>
                     </div>
                 </Tab>
-                <Tab eventKey="fuerzaL" title="Fuerza de Llegada">
+                <Tab eventKey="velocidad" title="Velocidad impulso">
                     <div className="container text-center" style={BoxStyle}>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
@@ -152,12 +152,12 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? fuerzaLlegada : 0}kg</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? fuerzaLlegada : 0} jump/min</p>
                             </div>
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-10 mx-auto">
-                                <ProgressBar variant="success" animated now={start ? fuerzaLlegada*0.7 : 0} />
+                                <ProgressBar variant="success" animated now={start ? fuerzaLlegada : 0} />
                             </div>
                         </div>
                         <div className="col-3 mx-auto">
@@ -222,7 +222,7 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? calorias : 0}cal</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? calorias : 0} cal</p>
                             </div>
                         </div>
                         <div className="row mb-5">
@@ -249,7 +249,7 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? peso : 0}kg</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{start ? peso : 0} kg</p>
                             </div>
                         </div>
                         <div className="row mb-5">
