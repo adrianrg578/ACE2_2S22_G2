@@ -8,11 +8,12 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import socket from "../Socket/Socket";
+
+//components
 import Entreno from './Entreno';
 import Reporte from "./Reporte";
 
 
-//Componentes
 
 export default function MenuEntreno() {
     //Variables

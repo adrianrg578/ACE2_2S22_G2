@@ -3,9 +3,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { helpHttp } from "../Helper/helpHttp";
 import React, {useState} from 'react';
 
-export default function RegisterForm() {
+export default function RegistroForm() {
     //Rutas
-    let urlRegister = "http://192.168.1.5:4001/register"
+    let urlRegister = "http://localhost:4001/register"
     //Variables
     const navigate = useNavigate()
     let api = helpHttp();
@@ -24,9 +24,9 @@ export default function RegisterForm() {
     
     //Estilos
     const InputStyle = {
-        "backgroundColor": "rgba(5,.5,0.5,.3)",
-        "border": "none",
-        "color": "white"
+        backgroundColor: "rgba(5,.5,0.5,.3)",
+        border: "none",
+        color: "white"
     };
 
     //Funciones
@@ -38,9 +38,8 @@ export default function RegisterForm() {
         console.log(dataUsuario)
     };
 
-    const sendLogin = async () => {     
-        navigate('/'); 
-        /*api.post(urlRegister, {body:dataUsuario}).then((res) => {
+    const sendLogin = async () => {      
+        api.post(urlRegister, {body:dataUsuario}).then((res) => {
             console.log(res)
             if(!res.err){
                 alert("Se agregó el usuario")
@@ -48,7 +47,7 @@ export default function RegisterForm() {
             }else{
                 console.log("ERROR")
             }
-          })*/
+          })
     }
     return (
         <div className="container">

@@ -39,7 +39,7 @@ const { ReadlineParser } = require('@serialport/parser-readline');
 
 //Puerto que le asigno la PC al BT 
 
-const mySerial = new SerialPort({path:'COM6',baudRate:9600});
+/*const mySerial = new SerialPort({path:'COM6',baudRate:9600});
 
 const parser = mySerial.pipe(new ReadlineParser({ delimiter:'\n'}))
 
@@ -74,7 +74,7 @@ parser.on('data',function(data){
 
 mySerial.on('data', function (data){
     io.emit('datos_de_arduino',data_arduino);
-})
+})*/
 
 
 //Peticiones al db
@@ -89,18 +89,16 @@ async function dataEntrenamiento() {
     };
     try {
         const [data, field] = await (await db2.then()).execute(
-            `SELECT IdDato, fecha, bpm, oxigeno, distancia, repeticion, peso FROM Datos as D
-            INNER JOIN Usuario U ON U.idUsuario = D.idUsuario
-            WHERE D.idUsuario = "${userIdOnline}"
-            ORDER BY IdDato DESC LIMIT 1;`
-
+            `SELECT id_Dato, peso_arduino FROM Datos WHERE id_user = 1 AND
+             peso_arduino>0 ORDER BY id_Dato DESC LIMIT 1;`
         );
-        datos.calorias = (0.049 * (data[0].peso / 2.205) * 2.2 * time).toFixed(2);
-        datos.repeticion = (data[0].repeticion);
+        
+        datos.calorias = (0.049 * (data[0].peso_arduino / 2.205) * 2.2 * time).toFixed(2);
+        datos.repeticion = (data[0].peso_arduino);
         datos.fecha = today.toLocaleString()
-        datos.rango = data[0].distancia;
+        datos.rango = data[0].peso_arduino;
         datos.tiempo = time.toFixed(2)
-        datos.bpm = (data[0].bpm);
+        datos.BPM = (data[0].peso_arduino);
 
     } catch (err) {
         console.log(err);
@@ -294,12 +292,7 @@ io.on('connection', async function (socket) {
     }
     console.log("Stados ", start, " Tiempo ", time)
     socket.emit('datos', await dataEntrenamiento());
-    socket.emit('calorias', await obtenerCalorias());
-    socket.emit('caloriasFecha', await obtenerCaloriasPorFecha());
-    socket.emit('frecuencia', await obtenerFrecuencia());
-    socket.emit('frecuenciaFecha', await obtenerFrecuenciaPorFecha());
-    socket.emit('rango', await obtenerRango());
-    socket.emit('rangoFecha', await obtenerRangoPorFecha());
+    
 });
 
 //Cambio de estado
@@ -426,7 +419,7 @@ app.post('/register', function (req, res) {
 //Inicio de sesion
 app.post("/login", function (req, res) {
     var query = coon.query(
-        `SELECT idUsuario, username, nombre, apellido, edad, peso, estatura, genero FROM Usuario WHERE ((username = '${req.body.Username}') AND (pass = '${req.body.Contrasena}'))`,
+        `SELECT id_user, username, nombre, apellido, edad, peso, estatura, genero FROM Usuario WHERE ((username = '${req.body.Username}') AND (pass = '${req.body.Contrasena}'))`,
         function (err, result) {
             if (err) {
                 throw err

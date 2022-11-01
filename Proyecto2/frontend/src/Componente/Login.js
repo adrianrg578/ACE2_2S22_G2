@@ -6,15 +6,15 @@ import LoginForm from "./LoginForm"
 export default function Login() {
   //Estilos
   const heightStyle = {
-    height: '90vh',
+    height: "90vh",
   };
 
   const backgroundStyle = {
-    "background": "transparent"
+    background: "transparent"
   };
 
   const BoxStyle = {
-    height: '60vh',
+    height: "60vh",
     background: "rgba(5,.5,0.5,.3)"
   };
 

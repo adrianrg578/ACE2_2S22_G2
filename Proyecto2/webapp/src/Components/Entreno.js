@@ -10,14 +10,27 @@ import reloj from '../Images/reloj.png'
 import saltando from '../Images/saltando.png'
 import silueta from '../Images/silueta-de-persona.png'
 import resitencia from '../Images/ejercicio.png'
+import { helpHttp } from '../Helper/helpHttp';
 
 
 //Componentes
 
 export default function Entreno() {
+
+    //conexion API y ruta
+    //let urlState = "http://localhost:4001/start"
+    let api = helpHttp();
+
     //Variables
     const saved = localStorage.getItem("Usuario");
     const dataUsuario = JSON.parse(saved)
+
+
+    //Hooks
+    const [dataEntreno, setDataEntreno] = useState({
+        dateInit: "2022-10-27",
+        dateEnd: "2022-10-28",
+    });
 
     //Estilos
     const InputStyle = {
@@ -35,6 +48,14 @@ export default function Entreno() {
     }
 
     //Funciones
+    //Funciones
+    const handleInputChange = (e) => {
+        setDataEntreno({
+            ...dataEntreno,
+            [e.target.name]: e.target.value
+        })
+    };
+    console.log(dataEntreno)
 
     //Conexion
     /*useEffect(() => {
@@ -86,10 +107,10 @@ export default function Entreno() {
                                     <Card.Title>Perfil</Card.Title>
                                 </Card.Header>
                                 <Card.Body>
-                                    <Card.Text>Edad: </Card.Text>
-                                    <Card.Text>Peso:  kg</Card.Text>
-                                    <Card.Text>Genero: </Card.Text>
-                                    <Card.Text>Estatura:  m</Card.Text>
+                                    <Card.Text>Edad: {dataUsuario.Edad}</Card.Text>
+                                    <Card.Text>Peso: {dataUsuario.Peso}kg</Card.Text>
+                                    <Card.Text>Genero: {dataUsuario.Genero}</Card.Text>
+                                    <Card.Text>Estatura:  {dataUsuario.Estatura}m</Card.Text>
                                 </Card.Body>
                             </Card>
                         </Row>
@@ -100,9 +121,9 @@ export default function Entreno() {
                                 </Card.Header>
                                 <Card.Body>
                                     <Card.Text>Inicio:</Card.Text>
-                                    <input type={'date'} style={StyleInput}></input>
+                                    <input type={'date'} style={StyleInput} name="dateInit" onChange={handleInputChange}></input>
                                     <Card.Text>Fin:</Card.Text>
-                                    <input type={'date'} style={StyleInput}></input>
+                                    <input type={'date'} style={StyleInput} name="dateEnd" onChange={handleInputChange}></input>
                                 </Card.Body>
                             </Card>
                         </Row>

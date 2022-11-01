@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 
 export default function LoginForm() {
     //Rutas
-    let urlLogin = "http://192.168.1.5:4001/login"
+    let urlLogin = "http://localhost:4001/login"
 
     //Variables
     const navigate = useNavigate()
