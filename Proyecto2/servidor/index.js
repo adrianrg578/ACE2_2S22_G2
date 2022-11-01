@@ -89,6 +89,60 @@ mySerial.on('data',function(data){
     io.emit('datos_de_arduino',datos_del_arduino);
 })
 
+//Peticiones al db
+async function dataEntrenamiento() {
+    let datos = {
+        FuerzaImpulso: 0,
+        PesoJumpBox: 0,
+        fecha: today.toLocaleString(),
+        tiempo: 5
+    };
+
+    try {
+        const [dataF, field1] = await (await db2.then()).execute(
+            `SELECT id_Dato, fuerza_impulso FROM Datos WHERE id_user = ${userIdOnline} AND fuerza_impulso>0 
+            ORDER BY id_Dato DESC LIMIT 1;`
+        );
+        datos.FuerzaImpulso = dataF[0].fuerza_impulso
+
+        const [dataP, field2] = await (await db2.then()).execute(
+            `SELECT id_Dato, peso_arduino FROM Datos WHERE id_user =  ${userIdOnline} AND peso_arduino>0 
+            ORDER BY id_Dato DESC LIMIT 1;`
+        );
+        datos.PesoJumpBox = dataP[0].peso_arduino
+        datos.tiempo = time.toFixed(2)
+    } catch (err) {
+        console.log(err);
+    }
+    console.log("#######Fuerza#######")
+    console.log((datos.FuerzaImpulso))
+    console.log("********Peso**********")
+    console.log(datos.PesoJumpBox)
+    console.log("////////fecha////////")
+    console.log(datos.fecha)
+    console.log("^^^^^^^^tiempo^^^^^^^^")
+    console.log(datos.tiempo)
+    return datos;
+}
+
+//Conexion cliente-Servidor
+io.on('connection', async function (socket) {
+    console.log("conectadoDatos!");
+    if (start === 1) {
+        time += (1 / 60);
+    } else {
+        time = 0;
+    }
+
+    console.log("Stados ", start, " Tiempo ", time)
+    socket.emit('datos', await dataEntrenamiento()); 
+});
+
+//Cambio de estado
+app.post("/start", function (req, res) {
+    start = req.body.state
+    console.log("Estado: "+start)
+})
 
 //Retorna los usuarios en la base de datos
 app.get("/users", function(req, res){

@@ -18,11 +18,11 @@
     }
   ],
   "lang": "es-MX",
-  "name": "PWA SpeedBox",
+  "name": "PWA Barras para flexiones",
   "orientation": "any",
   "prefer_related_application": false,
   "scope": "/",
-  "short_name": "SpeedBox",
+  "short_name": "Barras para flexiones",
   "start_url": "/",
   "theme_color": "blue"
 }

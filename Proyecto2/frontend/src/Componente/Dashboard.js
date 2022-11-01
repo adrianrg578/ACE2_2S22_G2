@@ -11,8 +11,7 @@ export default function Dashboard() {
 
     //Estilos
     const heightStyle = {
-        height: '100vh',
-        //"background": "black"
+        height: '90vh',
     };
 
     const backgroundStyle = {
@@ -20,8 +19,7 @@ export default function Dashboard() {
     };
 
     const BoxStyle = {
-        height: '80vh',
-        //"background": "pink",
+        height: '85vh',
         background: "rgba(5,.5,0.5,.3)"
     };
 
@@ -34,7 +32,7 @@ export default function Dashboard() {
                         <h1 className="text-center text-white">Bienvenido {dataUsuario.Nombre}</h1>
                     </div>
                     <div className="col-10 rounded mx-auto" style={BoxStyle}>
-                    <MenuEntreno />
+                        <MenuEntreno />
                     </div>
                 </div>
             </div>

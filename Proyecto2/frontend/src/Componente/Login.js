@@ -1,11 +1,12 @@
 import "bootstrap/dist/css/bootstrap.min.css"
 
 //Componentes
-import RegisterForm from "./RegisterForm";
+import LoginForm from "./LoginForm"
 
-export default function Registro() {
+export default function Login() {
+  //Estilos
   const heightStyle = {
-    height: '100vh',
+    height: '90vh',
   };
 
   const backgroundStyle = {
@@ -13,7 +14,7 @@ export default function Registro() {
   };
 
   const BoxStyle = {
-    height: '90vh',
+    height: '60vh',
     background: "rgba(5,.5,0.5,.3)"
   };
 
@@ -23,7 +24,7 @@ export default function Registro() {
       <div className="container">
         <div className="row d-flex rounded justify-content-center align-items-center" style={heightStyle}>
           <div className="col-6 rounded  d-flex justify-content-center align-items-center" style={BoxStyle}>
-            <RegisterForm/>
+            <LoginForm/>
           </div>
         </div>
       </div>

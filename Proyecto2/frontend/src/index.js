@@ -4,20 +4,19 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactDOM from 'react-dom/client';
 import React from 'react';
-import './index.css';
 
 //Componentes
-import Dashboard from "./Components/Dashboard";
-import Register from "./Components/Register";
-import Login from './Components/Login';
-
+import Dashboard from "./Componente/Dashboard";
+import Registro from "./Componente/Registro";
+import Login from './Componente/Login';
+import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Login/>} />
-      <Route path="/registro" element={<Register/>} />
+      <Route path="/registro" element={<Registro/>} />
       <Route path="/dashboard" element={<Dashboard/>} />
     </Routes>
   </BrowserRouter>

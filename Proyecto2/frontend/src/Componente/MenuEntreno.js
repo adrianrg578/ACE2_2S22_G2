@@ -2,31 +2,32 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import React, { useState, useEffect } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
+import { helpHttp } from "../Helper/helpHttp";
 import Button from 'react-bootstrap/Button';
 import GaugeChart from "react-gauge-chart";
 import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
 import socket from "../Socket/Socket";
-
-
-//Componentes
+import Tab from 'react-bootstrap/Tab';
 
 export default function MenuEntreno() {
+    //Rutas
+    let urlState = "http://localhost:4001/start"
+
     //Variables
     const saved = localStorage.getItem("Usuario");
     const dataUsuario = JSON.parse(saved)
+    let api = helpHttp();
 
     //Hooks
     const [frecuencia, setFrecuencia] = useState({ frecuencia: 0 });
-    const [velocidad, setVelocidad] = useState(0);
-
-    const [calorias, setCalorias] = useState(0);
-    const [fuerza, setFuerza] = useState(0);
-    const [tiempo, setTiempo] = useState(0);
-    const [fecha, setFecha] = useState(0);
-    const [ritmo, setRitmo] = useState(0);
-    const [time, setTime] = useState(0);
-    const [peso, setPeso] = useState(0);
+    const [velocidad, setVelocidad] = useState("");
+    const [calorias, setCalorias] = useState("");
+    const [fuerza, setFuerza] = useState("");
+    const [tiempo, setTiempo] = useState("");
+    const [fecha, setFecha] = useState("");
+    const [ritmo, setRitmo] = useState("");
+    const [time, setTime] = useState("");
+    const [peso, setPeso] = useState("");
 
     //Estilos
     const InputStyle = {
@@ -38,6 +39,7 @@ export default function MenuEntreno() {
     const BoxStyle2 = {
         background: "rgba(5,.5,0.5,.3)"
     };
+
     const BoxStyle = {
         height: '55vh'
     };
@@ -52,10 +54,6 @@ export default function MenuEntreno() {
         backgroundColor: "rgba(5,.5,0.5,.3)"
     };
 
-    const sendDashboard = async () => {
-        console.log("HOLA SOY FUERZA")
-    }
-
     //Funciones
     const handleInputChange = (e) => {
         setFrecuencia({
@@ -64,20 +62,50 @@ export default function MenuEntreno() {
         })
     };
 
+    const sendStart = async () => {
+        api.post(urlState, { body: { state: 1 } }).then((response) => {
+            if (!response.err) {
+                console.log("Inicio del entreno")
+            } else {
+                console.log("ERROR")
+            }
+        })
+
+        let datos = {
+            IdUsuario: dataUsuario.IdUsuario,
+        }
+        socket.emit('dato', datos);
+        console.log("Enviado: "+datos.IdUsuario)
+        console.log("local storage: "+dataUsuario.IdUsuario)
+    }
+
+    const sendEnd = async () => {
+        setTime(time)
+        api.post(urlState, { body: { state: 0 } }).then((response) => {
+            if (!response.err) {
+                console.log("Finalizo del entreno")
+
+            } else {
+                console.log("ERROR")
+            }
+        })
+    }
+
     //Conexion
-    /*useEffect(() => {
+    useEffect(() => {
         socket.on("datos", (data, callback) => {
-            console.log(data, "No se solo estoy probando FUERZA Y VELOCIDAD")
-            setFuerza(data.fuerza);
-            setVelocidad(data.velocidad);
-            setRitmo(data.ritmo);
-            setTiempo(data.tiempo);
+            setFuerza(data.FuerzaImpulso);
+            setPeso(data.peso_arduino);
+            setFecha(data.fecha);
+            setTime(data.tiempo);
+            
             callback({
-                IdUser: dataUsuario.IdUser
+                IdUser: ""
             });
         });
 
-    }, [fuerza, velocidad, ritmo, tiempo]);*/
+    }, [fuerza, peso, time, fecha]);
+
     return (
         <div >
             <Tabs
@@ -107,8 +135,8 @@ export default function MenuEntreno() {
                         </div>
                         <div className="col-3 mx-auto">
                             <ButtonGroup className="d-flex justify-content-center align-items-center" aria-label="Basic example">
-                                <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendDashboard()}*/>Iniciar</Button>
-                                <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendRegistro()}*/>Finalizar</Button>
+                                <Button className="btn outline-dark" style={InputStyle} onClick={() => sendStart()}>Iniciar</Button>
+                                <Button className="btn outline-dark" style={InputStyle} onClick={() => sendEnd()}>Finalizar</Button>
                             </ButtonGroup>
                         </div>
                     </div>
@@ -124,18 +152,18 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{fuerza} hit/min</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{velocidad} hit/min</p>
                             </div>
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-10 mx-auto">
-                                <ProgressBar variant="success" animated now={fuerza} />
+                                <ProgressBar variant="success" animated now={velocidad} />
                             </div>
                         </div>
                         <div className="col-3 mx-auto">
                             <ButtonGroup className="d-flex justify-content-center align-items-center" aria-label="Basic example">
-                                <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendDashboard()}*/>Iniciar</Button>
-                                <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendRegistro()}*/>Finalizar</Button>
+                                <Button className="btn outline-dark" style={InputStyle} onClick={() => sendStart()}>Iniciar</Button>
+                                <Button className="btn outline-dark" style={InputStyle} onClick={() => sendEnd()}>Finalizar</Button>
                             </ButtonGroup>
                         </div>
                     </div>
@@ -165,8 +193,8 @@ export default function MenuEntreno() {
                             <div className="col-6 mx-auto">
                                 <GaugeChart
                                     style={BoxStyle2}
-                                    className = "rounded"
-                                    percent={((tiempo * 100 / (frecuencia.frecuencia * 5)) / 100)}
+                                    className="rounded"
+                                    percent={((time * 100 / (peso * 5)) / 100)}
                                     nrOfLevels={3}
                                     colors={["#566573", "#2C3E50", "#566573"]}
                                 />
@@ -175,8 +203,8 @@ export default function MenuEntreno() {
                         <div className="row mb-4" >
                             <div className="col-3 mx-auto">
                                 <ButtonGroup className="d-flex justify-content-center align-items-center" aria-label="Basic example">
-                                    <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendDashboard()}*/>Iniciar</Button>
-                                    <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendRegistro()}*/>Finalizar</Button>
+                                    <Button className="btn outline-dark" style={InputStyle} onClick={() => sendStart()}>Iniciar</Button>
+                                    <Button className="btn outline-dark" style={InputStyle} onClick={() => sendEnd()}>Finalizar</Button>
                                 </ButtonGroup>
                             </div>
                         </div>
@@ -193,18 +221,18 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{fuerza} cal</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{calorias} cal</p>
                             </div>
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-10 mx-auto">
-                                <ProgressBar variant="success" animated now={fuerza} />
+                                <ProgressBar variant="success" animated now={calorias} />
                             </div>
                         </div>
                         <div className="col-3 mx-auto">
                             <ButtonGroup className="d-flex justify-content-center align-items-center" aria-label="Basic example">
-                                <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendDashboard()}*/>Iniciar</Button>
-                                <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendRegistro()}*/>Finalizar</Button>
+                                <Button className="btn outline-dark" style={InputStyle} onClick={() => sendStart()}>Iniciar</Button>
+                                <Button className="btn outline-dark" style={InputStyle} onClick={() => sendEnd()}>Finalizar</Button>
                             </ButtonGroup>
                         </div>
                     </div>
@@ -220,18 +248,18 @@ export default function MenuEntreno() {
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-7 mx-auto">
-                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{fuerza} kg</p>
+                                <p className="text-center rounded text-white fst-italic fw-bold" style={FontStyle}>{peso} kg</p>
                             </div>
                         </div>
                         <div className="row mb-5">
                             <div className="col-sm-10 mx-auto">
-                                <ProgressBar variant="success" animated now={fuerza} />
+                                <ProgressBar variant="success" animated now={peso} />
                             </div>
                         </div>
                         <div className="col-3 mx-auto">
                             <ButtonGroup className="d-flex justify-content-center align-items-center" aria-label="Basic example">
-                                <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendDashboard()}*/>Iniciar</Button>
-                                <Button className="btn outline-dark" style={InputStyle} /*onClick={() => sendRegistro()}*/>Finalizar</Button>
+                                <Button className="btn outline-dark" style={InputStyle} onClick={() => sendStart()}>Iniciar</Button>
+                                <Button className="btn outline-dark" style={InputStyle} onClick={() => sendEnd()}>Finalizar</Button>
                             </ButtonGroup>
                         </div>
                     </div>
@@ -240,3 +268,4 @@ export default function MenuEntreno() {
         </div>
     );
 }
+
