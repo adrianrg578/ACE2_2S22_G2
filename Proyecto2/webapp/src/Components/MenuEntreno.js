@@ -71,21 +71,6 @@ export default function MenuEntreno() {
         })
     };
 
-    //Conexion
-    /*useEffect(() => {
-        socket.on("datos", (data, callback) => {
-            console.log(data, "No se solo estoy probando FUERZA Y VELOCIDAD")
-            setFuerza(data.fuerza);
-            setVelocidad(data.velocidad);
-            setRitmo(data.ritmo);
-            setTiempo(data.tiempo);
-            callback({
-                IdUser: dataUsuario.IdUser
-            });
-        });
-
-    }, [fuerza, velocidad, ritmo, tiempo]);*/
-
     const StyleCard2 = {
         "backgroundColor": "rgba(5,.5,0.5,.3)",
         "border": "rgba(0, 0, 0, 0.5)",

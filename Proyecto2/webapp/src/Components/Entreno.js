@@ -18,7 +18,10 @@ import { helpHttp } from '../Helper/helpHttp';
 export default function Entreno() {
 
     //conexion API y ruta
-    //let urlState = "http://localhost:4001/start"
+    let urlTotal = "http://localhost:4001/totalEntreno"
+    let urlTotal1 = "http://localhost:4001/Entreno1"
+    let urlTotal2 = "http://localhost:4001/Entreno2"
+    let urlTotal3 = "http://localhost:4001/Entreno3"
     let api = helpHttp();
 
     //Variables
@@ -28,8 +31,9 @@ export default function Entreno() {
 
     //Hooks
     const [dataEntreno, setDataEntreno] = useState({
-        dateInit: "2022-10-27",
-        dateEnd: "2022-10-28",
+        dateInit: "2022-10-26",
+        dateEnd: "2022-11-10",
+        user: dataUsuario.IdUser
     });
 
     //Estilos
@@ -57,21 +61,6 @@ export default function Entreno() {
     };
     console.log(dataEntreno)
 
-    //Conexion
-    /*useEffect(() => {
-        socket.on("datos", (data, callback) => {
-            console.log(data, "No se solo estoy probando FUERZA Y VELOCIDAD")
-            setFuerza(data.fuerza);
-            setVelocidad(data.velocidad);
-            setRitmo(data.ritmo);
-            setTiempo(data.tiempo);
-            callback({
-                IdUser: dataUsuario.IdUser
-            });
-        });
-
-    }, [fuerza, velocidad, ritmo, tiempo]);*/
-
     const StyleInput = {
         "borderRadius": "5px",
         "marginBottom": "10px",
@@ -95,6 +84,62 @@ export default function Entreno() {
         "textAlign": "left",
         "marginBottom": "10px"
     };
+
+    //total entrenamientos
+    api.post(urlTotal, {body:dataEntreno}).then((response) => {
+        if(!response.err){
+            localStorage.setItem("nEntrenamientos", JSON.stringify({
+                Cantidad: response[0].Cantidad}
+                ))
+        }else{
+            console.log("ERROR")
+        }
+    });
+
+    //total entrenamientos
+    api.post(urlTotal1, {body:dataEntreno}).then((response) => {
+        if(!response.err){
+            localStorage.setItem("n1", JSON.stringify({
+                Cantidad: response[0].Cantidad}
+                ))
+        }else{
+            console.log("ERROR")
+        }
+    });
+
+    //total entrenamientos
+    api.post(urlTotal2, {body:dataEntreno}).then((response) => {
+        if(!response.err){
+            localStorage.setItem("n2", JSON.stringify({
+                Cantidad: response[0].Cantidad}
+                ))
+        }else{
+            console.log("ERROR")
+        }
+    });
+
+    //total entrenamientos
+    api.post(urlTotal3, {body:dataEntreno}).then((response) => {
+        if(!response.err){
+            localStorage.setItem("n3", JSON.stringify({
+                Cantidad: response[0].Cantidad}
+                ))
+        }else{
+            console.log("ERROR")
+        }
+    });
+
+    const saved1 = localStorage.getItem("nEntrenamientos");
+    const dataEntrenamiento = JSON.parse(saved1)
+
+    const saved11 = localStorage.getItem("n1");
+    const data1 = JSON.parse(saved11)
+
+    const saved2 = localStorage.getItem("n2");
+    const data2 = JSON.parse(saved2)
+
+    const saved3 = localStorage.getItem("n3");
+    const data3 = JSON.parse(saved3)
 
     return (
         <div >
@@ -158,7 +203,7 @@ export default function Entreno() {
                                                 <img src={rutina} style={{ "height": "150px" }}></img>
                                             </Col>
                                             <Col md={6} className="text-white text-center" >
-                                                <Card.Text style={{ "fontSize": "80px" }}>0</Card.Text>
+                                                <Card.Text style={{ "fontSize": "80px" }}>{dataEntrenamiento.Cantidad}</Card.Text>
                                             </Col>
                                         </Row>
                                     </Card.Body>
@@ -174,15 +219,15 @@ export default function Entreno() {
                                     <Row>
                                         <Col md={4} className="text-white text-center" >
                                             <img src={saltando} style={{ "height": "100px" }}></img>
-                                            <Card.Text style={{ "fontSize": "50px" }}>0</Card.Text>
+                                            <Card.Text style={{ "fontSize": "50px" }}>{data1.Cantidad}</Card.Text>
                                         </Col>
                                         <Col md={4} className="text-white text-center" >
                                             <img src={resitencia} style={{ "height": "100px" }}></img>
-                                            <Card.Text style={{ "fontSize": "50px"}}>0</Card.Text>
+                                            <Card.Text style={{ "fontSize": "50px"}}>{data2.Cantidad}</Card.Text>
                                         </Col>
                                         <Col md={4} className="text-white text-center" >
                                             <img src={silueta} style={{ "height": "100px" }}></img>
-                                            <Card.Text style={{ "fontSize": "50px" }}>0</Card.Text>
+                                            <Card.Text style={{ "fontSize": "50px" }}>{data3.Cantidad}</Card.Text>
                                         </Col>
                                     </Row>
                                 </Card.Body>
