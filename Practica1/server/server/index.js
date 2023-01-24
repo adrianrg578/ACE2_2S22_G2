@@ -40,7 +40,7 @@ const admindb = require("firebase-admin/database")
 
 var config = {
     credential: applicationDefault(),
-    databaseURL: 'https://practica1-arq2-default-rtdb.firebaseio.com'
+    databaseURL: //colocar la url de la base de datos
 };
 
 const ejec = initializeApp(config);
