@@ -1,11 +1,13 @@
 var mysql = require('mysql')
 var coon = mysql.createConnection(
-    {
-        host: '34.133.119.185',
-        user: 'root',
-        password: '1234',
-        database: 'puchingbag',
-        port: '3306'
+    // ingresar los datos proporcionados para el funcionamiento de la base
+    {  /*
+        host: '',
+        user: '',
+        password: '',
+        database: '',
+        port: ''
+        */
     }
 )
 
